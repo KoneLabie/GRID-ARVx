@@ -1,0 +1,69 @@
+name: Build GRID-ARVx installers
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: Windows
+            cmake_args: '-A x64'
+          - os: macos-latest
+            platform: macOS
+            cmake_args: ''
+          - os: ubuntu-22.04
+            platform: Linux
+            cmake_args: ''
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libfreetype6-dev libfontconfig1-dev \
+            libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev \
+            libxrandr-dev libxrender-dev libgl1-mesa-dev libglu1-mesa-dev xvfb
+      - name: Source checks
+        run: python tests/check_project.py
+      - name: Installer integration checks
+        if: runner.os == 'Linux'
+        run: python tests/packaging_tests.py
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }}
+      - name: Compile app and plugins
+        run: cmake --build build --config Release --parallel 2
+      - name: Audio core tests
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: CLAP host smoke test (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python tests/clap_smoke.py build/GridARVxPlugin_artefacts/Release/CLAP/GRID-ARVx.clap
+      - name: Stage compiled products
+        run: python scripts/stage.py ${{ matrix.platform }}
+      - name: Collect dependency license notices
+        run: python scripts/notices.py
+      - name: Install Windows installer compiler
+        if: runner.os == 'Windows'
+        run: choco install innosetup --yes --no-progress
+      - name: Generate native installer
+        run: python scripts/installers.py ${{ matrix.platform }}
+      - name: Upload installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: GRID-ARVx-${{ matrix.platform }}
+          path: dist/GRID-ARVx-Installer-*
+          if-no-files-found: error
+          retention-days: 30
