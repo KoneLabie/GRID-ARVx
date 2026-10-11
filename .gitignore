@@ -1,0 +1,10 @@
+/build*/
+/dist/
+/vendor/
+/sdk/
+*.user
+*.suo
+*.pdb
+__pycache__/
+.DS_Store
+Thumbs.db
