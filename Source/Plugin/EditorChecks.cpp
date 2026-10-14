@@ -77,11 +77,11 @@ juce::String Editor::runUiChecks(const juce::File &folder) {
   isHome = true;
   resized();
   check(lab.isVisible() && settings.isVisible() &&
-            multiple.isEnabled()==(GRID_USE_VEL_ENGINE!=0) &&
-            performanceButton.isEnabled()==(GRID_USE_VEL_ENGINE!=0),
+            multiple.isEnabled()==(GRID_USE_VEL_ENGINE!=0 && !GRID_DISABLE_ADVANCED_WORKSPACES) &&
+            performanceButton.isEnabled()==(GRID_USE_VEL_ENGINE!=0 && !GRID_DISABLE_ADVANCED_WORKSPACES),
         "Home enables native workspaces only in the engine build");
   snapshot("home");
-#if GRID_USE_VEL_ENGINE
+#if GRID_USE_VEL_ENGINE && !GRID_DISABLE_ADVANCED_WORKSPACES
   const auto initialBounds=getBounds();
   check(canvas.presentationTarget()==nullptr,"Home has no attached scene GL surface after startup");
   // Regression: enter the native menus first, without Lab or a window resize.
@@ -952,7 +952,7 @@ juce::String Editor::runUiChecks(const juce::File &folder) {
   check(!panel && isHome && lab.isVisible() && !back.isVisible(),
         "Settings Back returns to home");
   // Visit the real nested Mapping / Bindings widgets and measure transitions.
-#if GRID_USE_VEL_ENGINE
+#if GRID_USE_VEL_ENGINE && !GRID_DISABLE_ADVANCED_WORKSPACES
   selectWorkspace(Workspace::performance);
   check(category.isVisible() && home.isVisible() && midi.isVisible() && midi.getButtonText()=="MAPPING" && workspaceAction.isVisible() &&
         !record.isVisible() && !full.isVisible() && !popOut.isVisible() && !hide.isVisible(),

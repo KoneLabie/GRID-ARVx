@@ -264,7 +264,7 @@ Editor::Editor(Processor &p, juce::File presetRoot)
   };
   multiple.onClick=[this]{selectWorkspace(Workspace::multiple);};
   performanceButton.onClick=[this]{selectWorkspace(Workspace::performance);};
-#if !GRID_USE_VEL_ENGINE
+#if !GRID_USE_VEL_ENGINE || GRID_DISABLE_ADVANCED_WORKSPACES
   multiple.setEnabled(false);
   performanceButton.setEnabled(false);
 #endif
@@ -793,6 +793,9 @@ void Editor::updatePresentation() {
   canvas.setVisible(wantsCanvas);
 }
 void Editor::selectWorkspace(Workspace mode,bool homeScreen) {
+#if GRID_DISABLE_ADVANCED_WORKSPACES
+  if (mode != Workspace::lab) mode = Workspace::lab;
+#endif
   if(controlsWindow && (mode==Workspace::performance || processor.workspace()==Workspace::performance))togglePopOut();
   if(panel)closePanel();
 #if GRID_USE_VEL_ENGINE
