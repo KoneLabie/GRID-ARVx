@@ -301,6 +301,10 @@ private:
           : processor(p), changeSource(std::move(sourceAction)),
             changeSpeaker(std::move(speakerAction)),
             selector(devices, 0, 2, 0, 0, true, false, true, false) {
+        sourceGroup.setText("Audio source");
+        addAndMakeVisible(sourceGroup);
+        deviceGroup.setText("Input & MIDI devices");
+        addAndMakeVisible(deviceGroup);
         sourceLabel.setText("Analyze audio from", juce::dontSendNotification);
         addAndMakeVisible(sourceLabel);
         source.setComponentID("capture-source");
@@ -317,7 +321,7 @@ private:
                                          : "Choose a microphone or interface below. MIDI inputs work in either mode.",
               juce::dontSendNotification);
         };
-        speakersLabel.setText("Speaker / headphone device", juce::dontSendNotification);
+        speakersLabel.setText("Playback device", juce::dontSendNotification);
         addAndMakeVisible(speakersLabel);
         speakers.setComponentID("speaker-device");
         speakers.onChange = [this] {
@@ -336,7 +340,7 @@ private:
         refresh.onClick = [this] { refreshDevices(); };
         addAndMakeVisible(refresh);
         message.setComponentID("capture-help");
-        message.setText("Choose microphone input or capture speaker playback directly.", juce::dontSendNotification);
+        message.setText("Choose a microphone or capture speaker playback directly.", juce::dontSendNotification);
         addAndMakeVisible(message);
         activity.setComponentID("capture-activity");
         addAndMakeVisible(activity);
@@ -345,12 +349,12 @@ private:
         mute.setButtonText("Mute analysis input");
         mute.setToggleState(p.value("muteInput") >= 64, juce::dontSendNotification);
         mute.onClick = [this] { processor.set("muteInput", mute.getToggleState() ? 127 : 0); };
-        deviceNote.setText("Microphone/interface device settings below; MIDI inputs apply to both modes.", juce::dontSendNotification);
+        deviceNote.setText("Microphone/interface and MIDI inputs apply when using either source mode.", juce::dontSendNotification);
         addAndMakeVisible(deviceNote);
         addAndMakeVisible(viewport);
         viewport.setViewedComponent(&selector, false);
         refreshDevices(); refreshSource();
-        setSize(640, 440);
+        setSize(640, 520);
       }
       void refreshDevices() {
         endpoints = SystemInput::playbackDevices();
@@ -377,22 +381,26 @@ private:
 #endif
       }
       void resized() override {
-        sourceLabel.setBounds(15, 2, 190, 28);
-        source.setBounds(205, 2, getWidth() - 220, 28);
-        speakersLabel.setBounds(15, 36, 190, 28);
-        speakers.setBounds(205, 36, getWidth() - 300, 28);
-        refresh.setBounds(getWidth() - 88, 36, 73, 28);
-        message.setBounds(15, 68, getWidth() - 30, 40);
-        mute.setBounds(15, 108, getWidth() - 30, 28);
-        deviceNote.setBounds(15, 136, getWidth() - 30, 34);
-        activity.setBounds(15, 169, getWidth()-30, 34);
-        viewport.setBounds(0, 205, getWidth(), getHeight() - 205);
+        const auto width = getWidth() - 30;
+        sourceGroup.setBounds(8, 0, getWidth() - 16, 198);
+        deviceGroup.setBounds(8, 207, getWidth() - 16, getHeight() - 207);
+        sourceLabel.setBounds(22, 30, 175, 28);
+        source.setBounds(205, 30, getWidth() - 220, 28);
+        speakersLabel.setBounds(22, 66, 175, 28);
+        speakers.setBounds(205, 66, getWidth() - 300, 28);
+        refresh.setBounds(getWidth() - 88, 66, 73, 28);
+        message.setBounds(22, 99, width, 36);
+        mute.setBounds(22, 138, width, 26);
+        activity.setBounds(22, 166, width, 24);
+        deviceNote.setBounds(22, 232, width, 30);
+        viewport.setBounds(15, 266, getWidth() - 30, getHeight() - 278);
         selector.setSize(getWidth() - viewport.getScrollBarThickness(), juce::jmax(440, selector.getHeight()));
       }
       Processor &processor;
       std::function<juce::Result(bool)> changeSource;
       std::function<juce::Result(const juce::String &)> changeSpeaker;
       juce::Array<SystemInput::PlaybackDevice> endpoints;
+      juce::GroupComponent sourceGroup, deviceGroup;
       juce::AudioDeviceSelectorComponent selector;
       juce::Viewport viewport;
       juce::ComboBox source, speakers;
