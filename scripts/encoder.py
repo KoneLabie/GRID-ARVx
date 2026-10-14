@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import platform
 import shlex
 import shutil
@@ -93,7 +94,10 @@ def build(work, destination, jobs=2):
         shutil.copy2(binaries[0], binary)
     binary.chmod(0o755)
     license_text = subprocess.check_output([str(binary), "-L"], stderr=subprocess.STDOUT, text=True)
-    if "GNU Lesser General Public License" not in license_text or "--enable-gpl" in license_text or "--enable-nonfree" in license_text:
+    build_config = subprocess.check_output([str(binary), "-buildconf"], stderr=subprocess.STDOUT, text=True)
+    license_lower = license_text.lower()
+    forbidden = re.compile(r"(^|\s)--enable-(?:gpl|nonfree)(?:\s|$)", re.IGNORECASE)
+    if not ("lesser general public license" in license_lower or "lgpl" in license_lower) or forbidden.search(build_config):
         raise RuntimeError("Encoder licensing configuration did not pass")
     source_output = destination / "Source"; source_output.mkdir(exist_ok=True)
     for _, archive in (ffmpeg, headers):
