@@ -76,7 +76,11 @@ def build(work, destination, jobs=2):
             flags += ["--cc=clang -arch " + arch, "--arch=" + ("aarch64" if arch == "arm64" else "x86_64"),
                       "--target-os=darwin", "--enable-cross-compile",
                       "--extra-cflags=-mmacosx-version-min=11.0", "--extra-ldflags=-mmacosx-version-min=11.0"]
-        command = ["bash", str(ffmpeg[0] / "configure"), *flags]
+        # In the MSYS2 GitHub runner, `bash` can resolve to the Windows WSL
+        # launcher instead of the active MSYS2 shell. Use MSYS2's POSIX sh
+        # explicitly for the configure script; macOS keeps using bash.
+        shell = "sh" if windows else "bash"
+        command = [shell, str(ffmpeg[0] / "configure"), *flags]
         commands.append(shlex.join(command))
         subprocess.run(command, cwd=obj, env=env, check=True)
         subprocess.run(["make", f"-j{jobs}"], cwd=obj, env=env, check=True)
