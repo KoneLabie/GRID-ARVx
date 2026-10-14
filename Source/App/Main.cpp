@@ -49,6 +49,7 @@ public:
       processor_.receiveMidi(m.getMessage());
     midi_.clear();
   }
+  void setSystemSource(bool enabled) noexcept { systemSource_.store(enabled); }
   void audioDeviceStopped() override {}
   void audioDeviceIOCallbackWithContext(
       const float *const *input, int inputs, float *const *output, int outputs,
@@ -57,7 +58,7 @@ public:
       if (output[channel])
         juce::FloatVectorOperations::clear(output[channel], samples);
     pollMidi(samples);
-    if (inputs > 0 && processor_.value("muteInput") < 64)
+    if (!systemSource_.load() && inputs > 0 && processor_.value("muteInput") < 64)
       processor_.analyzeInput(input[0], inputs > 1 ? input[1] : nullptr,
                                samples);
   }
@@ -66,6 +67,7 @@ private:
   Processor &processor_;
   juce::MidiMessageCollector collector_;
   juce::MidiBuffer midi_;
+  std::atomic<bool> systemSource_{false};
 };
 class Window final : public juce::DocumentWindow {
 public:
@@ -262,12 +264,14 @@ private:
       return juce::Result::ok();
     }
     if (!system) {
+      input_->setSystemSource(false);
       systemInput_->close();
       processor_->analysis.reset();
       devices_.addAudioCallback(input_.get());
       usingSystem_ = false;
     } else {
       const bool previousSystem = usingSystem_;
+      input_->setSystemSource(true);
       if (!usingSystem_) devices_.removeAudioCallback(input_.get());
       auto result = systemInput_->open(requested);
       if (result.failed()) {
@@ -276,6 +280,7 @@ private:
           usingSystem_ = true;
           processor_->setAssetProperty("audioSource", "system");
         } else {
+          input_->setSystemSource(false);
           devices_.addAudioCallback(input_.get());
           usingSystem_ = false;
           processor_->setAssetProperty("audioSource", "hardware");
