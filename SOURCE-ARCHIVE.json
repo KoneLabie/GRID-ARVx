@@ -30,12 +30,12 @@
       "bytes": 181
     },
     "PACKAGE-MANIFEST.sha256": {
-      "sha256": "ae1b3a99b51272fef31d01e60668580410b00faa4deb04b34a6ac8966837ec39",
+      "sha256": "12053a3533ced75107ccb73b2468ffbd93cf1cae7c1a3830e4ac5710da69f23b",
       "bytes": 7517
     },
     "README.md": {
-      "sha256": "bcfa48ce5d08554ff196a0ad01a1df2f9174ab00ba9af40538239cae08d484b9",
-      "bytes": 4053
+      "sha256": "ee6e90adb7917f59227bcf2d984de417a29dfa7dca61f06a7d342eceae9488c4",
+      "bytes": 4535
     },
     "Source/App/Main.cpp": {
       "sha256": "df98310160197d83dd6df9911e3333057738264180055998fb0a25270aa08fae",

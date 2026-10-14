@@ -16,6 +16,13 @@ the app and its engine per user, adds shortcuts and includes an uninstaller.
 Visual Lab Pro does not need to be installed. Target: Windows 10 version 2004+
 or Windows 11, with compatible GPU/OpenGL and audio drivers.
 
+No existing home folder named Kone or KoneLabie is required. The installer uses
+the current account's Windows Local AppData directory. Settings and presets use
+the current account's AppData directory; GRID creates its `KoneLabie/GRID-ARVx`
+publisher/application folders automatically. The engine loads from the `Engine`
+folder beside the installed executable, independently of the developer's folder
+layout. Linux/macOS engine experiments are separate and are not in this package.
+
 Recording requires an FFmpeg executable selected in Settings. The standard
 installer does not bundle one. The optional encoder source-build workflow is
 documented in [Windows release instructions](docs/WINDOWS-RELEASE.md).
