@@ -191,14 +191,14 @@ void ToolButton::paintButton(juce::Graphics &g, bool over, bool down) {
     g.fillEllipse(x + 10, y + 14, 3, 3);
     g.fillRect(x + 11, y + 16, 1.2f, 3.5f);
   } else if (icon == "reset" || icon == "cycle") {
-    juce::Graphics::ScopedSaveState saved(g);
-    if (icon == "cycle")
-      g.addTransform(juce::AffineTransform::scale(-1.0f, 1.0f)
-                         .translated((float)getWidth(), 0));
+    // Clean counter-clockwise reset arrow: leave the glyph standalone so the
+    // button supplies its own surface and hover treatment.
     juce::Path p;
-    p.addCentredArc(b.getCentreX(), b.getCentreY(), 8, 8, 0, .4f, 5.5f, true);
-    g.strokePath(p, juce::PathStrokeType(1.7f));
-    g.drawLine(x + 16, y + 3, x + 20, y + 7, 1.7f);
+    p.addCentredArc(b.getCentreX(), b.getCentreY(), 8, 8, 0, 4.9f, 10.15f, true);
+    g.strokePath(p, juce::PathStrokeType(1.8f, juce::PathStrokeType::curved,
+                                         juce::PathStrokeType::rounded));
+    g.drawLine(x + 4, y + 7, x + 4, y + 13, 1.8f);
+    g.drawLine(x + 4, y + 13, x + 10, y + 10, 1.8f);
   } else if (icon == "up" || icon == "down") {
     juce::Path p;
     bool up = icon == "up";
