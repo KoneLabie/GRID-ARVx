@@ -305,11 +305,14 @@ private:
                  std::function<juce::Result(const juce::String &)> speakerAction)
           : processor(p), changeSource(std::move(sourceAction)),
             changeSpeaker(std::move(speakerAction)),
-            selector(devices, 0, 2, 0, 0, true, false, true, false) {
+            audioSelector(devices, 0, 2, 0, 0, false, false, true, false),
+            midiSelector(devices, 0, 0, 0, 0, true, false, false, false) {
         sourceGroup.setText("Audio source");
         addAndMakeVisible(sourceGroup);
-        deviceGroup.setText("Input & MIDI devices");
+        deviceGroup.setText("Audio devices");
         addAndMakeVisible(deviceGroup);
+        midiGroup.setText("MIDI inputs");
+        addAndMakeVisible(midiGroup);
         sourceLabel.setText("Analyze audio from", juce::dontSendNotification);
         addAndMakeVisible(sourceLabel);
         source.setComponentID("capture-source");
@@ -326,7 +329,7 @@ private:
                                          : "Choose a microphone or interface below. MIDI inputs work in either mode.",
               juce::dontSendNotification);
         };
-        speakersLabel.setText("Playback device", juce::dontSendNotification);
+        speakersLabel.setText("Output", juce::dontSendNotification);
         addAndMakeVisible(speakersLabel);
         speakers.setComponentID("speaker-device");
         speakers.onChange = [this] {
@@ -356,8 +359,10 @@ private:
         mute.onClick = [this] { processor.set("muteInput", mute.getToggleState() ? 127 : 0); };
         deviceNote.setText("Microphone/interface and MIDI inputs apply when using either source mode.", juce::dontSendNotification);
         addAndMakeVisible(deviceNote);
-        addAndMakeVisible(viewport);
-        viewport.setViewedComponent(&selector, false);
+        addAndMakeVisible(audioViewport);
+        audioViewport.setViewedComponent(&audioSelector, false);
+        addAndMakeVisible(midiViewport);
+        midiViewport.setViewedComponent(&midiSelector, false);
         refreshDevices(); refreshSource();
         setSize(640, 520);
       }
@@ -388,7 +393,8 @@ private:
       void resized() override {
         const auto width = getWidth() - 30;
         sourceGroup.setBounds(8, 0, getWidth() - 16, 198);
-        deviceGroup.setBounds(8, 207, getWidth() - 16, getHeight() - 207);
+        deviceGroup.setBounds(8, 207, getWidth() - 16, 165);
+        midiGroup.setBounds(8, 380, getWidth() - 16, getHeight() - 380);
         sourceLabel.setBounds(22, 30, 175, 28);
         source.setBounds(205, 30, getWidth() - 220, 28);
         speakersLabel.setBounds(22, 66, 175, 28);
@@ -398,20 +404,22 @@ private:
         mute.setBounds(22, 138, width, 26);
         activity.setBounds(22, 166, width, 24);
         deviceNote.setBounds(22, 232, width, 30);
-        viewport.setBounds(15, 266, getWidth() - 30, getHeight() - 278);
-        selector.setSize(getWidth() - viewport.getScrollBarThickness(), juce::jmax(440, selector.getHeight()));
+        audioViewport.setBounds(15, 266, getWidth() - 30, 100);
+        midiViewport.setBounds(15, 424, getWidth() - 30, getHeight() - 438);
+        audioSelector.setSize(getWidth() - audioViewport.getScrollBarThickness(), 96);
+        midiSelector.setSize(getWidth() - midiViewport.getScrollBarThickness(), 220);
       }
       Processor &processor;
       std::function<juce::Result(bool)> changeSource;
       std::function<juce::Result(const juce::String &)> changeSpeaker;
       juce::Array<SystemInput::PlaybackDevice> endpoints;
-      juce::GroupComponent sourceGroup, deviceGroup;
-      juce::AudioDeviceSelectorComponent selector;
-      juce::Viewport viewport;
+      juce::AudioDeviceSelectorComponent audioSelector, midiSelector;
+      juce::Viewport audioViewport, midiViewport;
       juce::ComboBox source, speakers;
       juce::TextButton refresh;
       juce::Label sourceLabel, speakersLabel, message, deviceNote, activity;
       juce::ToggleButton mute;
+      juce::GroupComponent sourceGroup, deviceGroup, midiGroup;
     };
     return std::make_unique<AudioPanel>(devices_, *processor_,
         [this](bool system) { return selectAudioSource(system); },
