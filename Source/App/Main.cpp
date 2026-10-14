@@ -32,7 +32,7 @@ static juce::Rectangle<int> monitorWorkArea(int number) {
 class Input final : public juce::AudioIODeviceCallback,
                     public juce::MidiInputCallback {
 public:
-  explicit Input(Processor &processor) : processor_(processor) {
+  Input(Processor &processor, juce::AudioDeviceManager &devices) : processor_(processor), devices_(devices) {
     midi_.ensureSize(65536);
   }
   void audioDeviceAboutToStart(juce::AudioIODevice *device) override {
@@ -44,10 +44,15 @@ public:
     collector_.addMessageToQueue(m);
   }
   void pollMidi(int samples) {
+    refreshOutput();
     collector_.removeNextBlockOfMessages(midi_, samples);
     for (auto m : midi_)
       processor_.receiveMidi(m.getMessage());
     midi_.clear();
+  }
+  void sendFeedback(const juce::MidiMessage &message) {
+    const juce::ScopedLock lock(outputLock_);
+    if (output_) output_->sendMessageNow(message);
   }
   void setSystemSource(bool enabled) noexcept { systemSource_.store(enabled); }
   void audioDeviceStopped() override {}
@@ -64,10 +69,21 @@ public:
   }
 
 private:
+  void refreshOutput() {
+    const auto id = devices_.getDefaultMidiOutputIdentifier();
+    const juce::ScopedLock lock(outputLock_);
+    if (id == outputId_) return;
+    output_.reset(); outputId_ = id;
+    if (id.isNotEmpty()) output_ = juce::MidiOutput::openDevice(id);
+  }
   Processor &processor_;
+  juce::AudioDeviceManager &devices_;
   juce::MidiMessageCollector collector_;
   juce::MidiBuffer midi_;
   std::atomic<bool> systemSource_{false};
+  juce::CriticalSection outputLock_;
+  std::unique_ptr<juce::MidiOutput> output_;
+  juce::String outputId_;
 };
 class Window final : public juce::DocumentWindow {
 public:
@@ -141,7 +157,10 @@ public:
       targetArea=monitorWorkArea(arguments.fromFirstOccurrenceOf("=",false,false).getIntValue());
       if(targetArea.isEmpty()){setApplicationReturnValue(4);quit();return;}
     }
-    input_ = std::make_unique<Input>(*processor_);
+    input_ = std::make_unique<Input>(*processor_, devices_);
+    processor_->setMidiFeedback([this](const juce::MidiMessage &message) {
+      if (input_) input_->sendFeedback(message);
+    });
     systemInput_ = std::make_unique<SystemInput>(*processor_);
     systemInput_->midiPoll = [this](int n) { input_->pollMidi(n); };
     window_ = std::make_unique<Window>(
@@ -306,7 +325,7 @@ private:
           : processor(p), changeSource(std::move(sourceAction)),
             changeSpeaker(std::move(speakerAction)),
             audioSelector(devices, 0, 2, 0, 0, false, false, true, false),
-            midiSelector(devices, 0, 0, 0, 0, true, false, false, false) {
+            midiSelector(devices, 0, 0, 0, 0, true, true, false, false) {
         sourceGroup.setText("Audio source");
         addAndMakeVisible(sourceGroup);
         deviceGroup.setText("Audio devices");

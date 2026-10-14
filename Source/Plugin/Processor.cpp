@@ -110,6 +110,13 @@ void Processor::receiveMidi(const juce::MidiMessage &m) noexcept {
     n = p->getValue() >= 0.5f ? 0.0f : 127.0f;
   p->setValueNotifyingHost(p->convertTo0to1(n));
   appliedMidi.push({e.channel,b.target,(int)n,e.note});
+  if (b.hardware == Hardware::button && midiFeedback) {
+    const auto feedback = e.note
+        ? (n >= 64 ? juce::MidiMessage::noteOn(e.channel, e.cc, (juce::uint8)127)
+                   : juce::MidiMessage::noteOff(e.channel, e.cc))
+        : juce::MidiMessage::controllerEvent(e.channel, e.cc, (juce::uint8)n);
+    midiFeedback(feedback);
+  }
   if(context!=Workspace::lab)
     mappedEvents.push({(int)context+1,b.target,(int)n,b.hardware==Hardware::button});
 }
@@ -193,6 +200,9 @@ void Processor::bindPerformanceMidi(size_t action,int channel,int control,bool n
   bindings[(size_t)Workspace::performance][(size_t)slot].store(0);
   performanceMidiDown[(size_t)slot].store(false);
   performanceMidi[(size_t)slot].store((int)action+1);
+  if (midiFeedback)
+    midiFeedback(note ? juce::MidiMessage::noteOn(channel, control, (juce::uint8)127)
+                      : juce::MidiMessage::controllerEvent(channel, control, (juce::uint8)127));
 }
 juce::String Processor::performanceMidiLabel(size_t action) const {
   for(size_t slot=0;slot<performanceMidi.size();++slot)
