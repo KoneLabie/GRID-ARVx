@@ -20,6 +20,10 @@ with tempfile.TemporaryDirectory() as directory:
         product.parent.mkdir(parents=True); product.write_text("fixture")
     app = build / "GridARVxApp_artefacts/Release/GRID-ARVx"; app.parent.mkdir(parents=True)
     app.write_text("#!/bin/sh\necho fixture\n"); app.chmod(0o755)
+    encoder = build / "encoder"; (encoder / "Source").mkdir(parents=True)
+    (encoder / "ffmpeg").write_text("#!/bin/sh\necho encoder fixture\n")
+    (encoder / "ffmpeg").chmod(0o755)
+    (encoder / "Source/BUILD.json").write_text("{}")
     staging.stage(build, stage, "Linux")
     output = root / "installer.run"; installers.build("Linux", stage, output)
     for options, expected in [("--standalone", "Standalone"), ("--vst3", "VST3"), ("--clap", "CLAP"), ("--all", "All")]:
@@ -30,6 +34,7 @@ with tempfile.TemporaryDirectory() as directory:
         assert (home / ".local/opt/KoneLabie/GRID-ARVx/GRID-ARVx").exists() == (expected in ("Standalone", "All"))
         if expected in ("Standalone", "All"):
             assert (home / ".local/share/applications/konelabie-grid-arvx.desktop").exists()
+        assert (home / ".local/share/KoneLabie/GRID-ARVx/tools/ffmpeg").exists()
     no_changes = root / "invalid"; no_changes.mkdir()
     result = subprocess.run(["bash", str(output), "--standalone", "--invalid"],
         env={**os.environ, "HOME": str(no_changes)}, capture_output=True)
@@ -47,6 +52,7 @@ with tempfile.TemporaryDirectory() as directory:
     assert commands.call_count == 6, "Expected four components, required notices, and one product package"
     work = root / "macos-work"
     assert (work / "Standalone/Applications/GRID-ARVx.app/Contents/Info.plist").exists()
+    assert (work / "Notices/Library/Application Support/KoneLabie/GRID-ARVx/tools/Source/BUILD.json").exists()
     xml = ET.parse(work / "distribution.xml")
     assert {node.attrib["id"] for node in xml.findall("choice")} == {"Standalone", "VST3", "AU", "CLAP", "Notices"}
 print("PASS: Linux installer component selection, desktop shortcut, bad selections, missing components")

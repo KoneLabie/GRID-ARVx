@@ -1,6 +1,21 @@
 /build*/
 /dist/
-/vendor/
+/vendor/*
+!/vendor/VelEngine/
+/vendor/VelEngine/*
+!/vendor/VelEngine/Windows/
+/vendor/VelEngine/Windows/*
+!/vendor/VelEngine/Windows/x64/
+/vendor/VelEngine/Windows/x64/*
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/
+/vendor/VelEngine/Windows/x64/Vel Engine.vst3/**
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Plugin.ico
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/desktop.ini
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/Resources/
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/Resources/moduleinfo.json
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/x86_64-win/
+!/vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/x86_64-win/Vel Engine.vst3
 /sdk/
 *.user
 *.suo

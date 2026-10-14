@@ -27,6 +27,9 @@ cp "$work_dir/LICENSE-NOTICE.md" "$notices_dir/"
 for folder in docs ThirdPartyNotices; do
   if [[ -d "$work_dir/$folder" ]]; then cp -R "$work_dir/$folder" "$notices_dir/"; fi
 done
+mkdir -p "$notices_dir/tools"
+cp -R "$work_dir/Tools/." "$notices_dir/tools/"
+chmod +x "$notices_dir/tools/ffmpeg"
 for option in "$@"; do
   case "$option" in
     --all) selected=(Standalone VST3 CLAP) ;;

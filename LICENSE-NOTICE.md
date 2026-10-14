@@ -1,15 +1,18 @@
 # Licensing status
 
-No project-wide redistribution license has been selected for GRID-ARVx in this
-foundation. Public repository visibility and a source-code license are separate
-decisions. Do not label this repository MIT/AGPL/other until the owner selects
+No project-wide redistribution license has been selected for GRID-ARVx.
+Public repository and test distribution are authorized under the creator's
+clearance. No resale rights are implied; redistribution remains subject to the
+third-party notices and terms below. Do not label this
+repository MIT/AGPL/other until the owner selects
 the intended terms and checks dependency compatibility.
 
 JUCE's pinned modules offer AGPLv3 or the JUCE 8 agreement. Private, free,
 noncommercial testing does not remove dependency license conditions. An
 applicable free JUCE tier or compliant open-source route may avoid a fee; the
-owner still needs to select the applicable route. We have not registered an
-account, accepted an agreement for the owner, or selected a paid plan.
+owner remains responsible for the applicable agreement. The owner selected JUCE
+Starter during this project; account enrollment and acceptance are user-controlled.
+No paid plan was selected by this agent.
 
 The pinned JUCE version contains an older VST3 SDK with its own license files.
 Do not assume a newer SDK's MIT terms apply retroactively to this dependency.
@@ -31,5 +34,12 @@ Official references:
 - [CLAP adapter](https://github.com/free-audio/clap-juce-extensions)
 - [Avid AAX SDK information](https://developer.avid.com/aax/)
 
-Visual Lab Pro belongs to Greyland Audio. GRID-ARVx is an independent research
-implementation; no vendor source, presets, fonts, media, or branding is bundled.
+Visual Lab Pro belongs to Greyland Audio. A separate unchanged Windows VST3
+copy runs locally under `vendor/VelEngine` for the authorized modified
+version. The source package includes only the four required
+bundle files through an explicit Git allowlist. The private Windows
+preview stages its copied engine beside the standalone app; other build targets
+still use the independent renderer unless explicitly configured. No user license codes or activation/settings files are included.
+See [original engine status](docs/ORIGINAL-ENGINE.md). The permission reported
+by the owner is specific to this project; it is not an open-source license and
+does not grant resale rights or alter the third-party terms above.

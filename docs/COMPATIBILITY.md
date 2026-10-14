@@ -1,5 +1,10 @@
 # Build targets and compatibility boundaries
 
+The current 0.4.18 release workflow packages **only Windows x64 standalone with
+Vel Engine**. Linux/macOS native-engine builds are deferred, and DAW plugins are
+not in this installer. The table below describes the earlier independent-renderer
+build targets, not validated availability of the current native engine on them.
+
 | Format | Platforms | State |
 | --- | --- | --- |
 | Standalone | Windows x64, macOS universal, Linux x64 | Included |

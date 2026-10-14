@@ -1,69 +1,87 @@
-name: Build GRID-ARVx installers
+name: Build Windows installer
 on:
   push:
     branches: [main, master]
   pull_request:
   workflow_dispatch:
+    inputs:
+      bundle_encoder:
+        description: Build and bundle the recording encoder with its source (slower)
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
-  group: build-${{ github.ref }}
+  group: windows-installer-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            platform: Windows
-            cmake_args: '-A x64'
-          - os: macos-latest
-            platform: macOS
-            cmake_args: ''
-          - os: ubuntu-22.04
-            platform: Linux
-            cmake_args: ''
-    runs-on: ${{ matrix.os }}
+  windows:
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
     steps:
+      - name: Check repository distribution setting
+        shell: pwsh
+        run: Write-Host 'Public repository distribution is authorized for this release.'
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install Linux build dependencies
-        if: runner.os == 'Linux'
+      - name: Source and packaging fixture checks
+        shell: pwsh
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libasound2-dev libfreetype6-dev libfontconfig1-dev \
-            libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev \
-            libxrandr-dev libxrender-dev libgl1-mesa-dev libglu1-mesa-dev xvfb
-      - name: Source checks
-        run: python tests/check_project.py
-      - name: Installer integration checks
-        if: runner.os == 'Linux'
-        run: python tests/packaging_tests.py
-      - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }}
-      - name: Compile app and plugins
+          python tests/check_project.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/private_preview_tests.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tests/windows_release_tests.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Configure native Windows standalone
+        run: cmake -S . -B build -A x64 -DGRID_USE_VEL_ENGINE=ON -DGRID_BUILD_PLUGINS=OFF -DGRID_ENABLE_CLAP=OFF
+      - name: Compile application and core tests
         run: cmake --build build --config Release --parallel 2
-      - name: Audio core tests
+      - name: Core tests
         run: ctest --test-dir build -C Release --output-on-failure
-      - name: CLAP host smoke test (Linux)
-        if: runner.os == 'Linux'
-        run: xvfb-run -a python tests/clap_smoke.py build/GridARVxPlugin_artefacts/Release/CLAP/GRID-ARVx.clap
-      - name: Stage compiled products
-        run: python scripts/stage.py ${{ matrix.platform }}
-      - name: Collect dependency license notices
-        run: python scripts/notices.py
-      - name: Install Windows installer compiler
-        if: runner.os == 'Windows'
-        run: choco install innosetup --yes --no-progress
-      - name: Generate native installer
-        run: python scripts/installers.py ${{ matrix.platform }}
-      - name: Upload installer
-        uses: actions/upload-artifact@v7
+      # GPU/OBS behavior is reviewed on real hardware; hosted-runner builds are
+      # not labeled as native rendering or clean-machine validation.
+      - name: Install optional recording encoder tools
+        if: inputs.bundle_encoder == true
+        uses: msys2/setup-msys2@v2
         with:
-          name: GRID-ARVx-${{ matrix.platform }}
-          path: dist/GRID-ARVx-Installer-*
+          msystem: MINGW64
+          update: true
+          install: make nasm mingw-w64-x86_64-gcc mingw-w64-x86_64-pkgconf mingw-w64-x86_64-python
+      - name: Build optional recording encoder and source package
+        if: inputs.bundle_encoder == true
+        shell: msys2 {0}
+        run: python scripts/encoder.py
+      - name: Install Inno Setup 6
+        shell: pwsh
+        run: |
+          $setup = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.3.exe'
+          $folder = Join-Path $env:RUNNER_TEMP 'InnoSetup6'
+          Invoke-WebRequest 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_3/innosetup-6.7.3.exe' -OutFile $setup
+          $signature = Get-AuthenticodeSignature -LiteralPath $setup
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'CN=Pyrsys B\.V\.') {
+            throw 'Inno Setup signature verification failed'
+          }
+          $process = Start-Process $setup -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER','/NOICONS',('/DIR="'+$folder+'"')) -WindowStyle Hidden -Wait -PassThru
+          if ($process.ExitCode -ne 0) { exit $process.ExitCode }
+          "GRID_ISCC=$folder\ISCC.exe" >> $env:GITHUB_ENV
+      - name: Generate Windows installer
+        shell: pwsh
+        env:
+          BUNDLE_ENCODER: ${{ inputs.bundle_encoder }}
+        run: |
+          $arguments = @('scripts/windows_release.py', '--iscc', $env:GRID_ISCC)
+          if ($env:BUNDLE_ENCODER -eq 'true') { $arguments += @('--encoder', 'build/encoder') }
+          python @arguments
+      - uses: actions/upload-artifact@v7
+        with:
+          name: GRID-ARVx-Windows-x64-Installer
+          path: |
+            dist/GRID-ARVx-*-Windows-x64-Setup.exe
+            dist/windows-native-stage/release-manifest.json
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 14
+# Linux/macOS are intentionally deferred until a compatible Vel Engine exists.

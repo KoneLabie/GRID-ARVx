@@ -1,0 +1,357 @@
+{
+  "product": "GRID-ARVx",
+  "version": "0.4.18",
+  "type": "Private GitHub source package",
+  "platform": "Windows x64; Linux/macOS deferred",
+  "distribution": "Private repository and authorized testing only",
+  "files": {
+    ".gitattributes": {
+      "sha256": "1acd35b9387df6cf7935e5bce245f3ecc5966639488a8061c3b218c7c297c9cf",
+      "bytes": 104
+    },
+    ".github/workflows/build.yml": {
+      "sha256": "cf8ced58f2794db5f8a809ee7a6c1985eebce3f45f31ed70193e5233b4acdb9d",
+      "bytes": 3918
+    },
+    ".gitignore": {
+      "sha256": "14bf28ee065cbb9ff7daf662d8353e25d504658b3f7e8b13bd1e690594bb7f4b",
+      "bytes": 840
+    },
+    "CMakeLists.txt": {
+      "sha256": "09454030155cabbea667a2b02e0400de1928b692b37ce40270d8d535b8ad8857",
+      "bytes": 7968
+    },
+    "LICENSE-NOTICE.md": {
+      "sha256": "5102360a86da77913398c6357615f7856113875c7f5802f685012b18e4201876",
+      "bytes": 2776
+    },
+    "Launch-GRID-ARVx.cmd": {
+      "sha256": "dca673d84f884646493e21c709665a392f5c60b7c9561686b5aab3413a6826f9",
+      "bytes": 181
+    },
+    "PACKAGE-MANIFEST.sha256": {
+      "sha256": "ae1b3a99b51272fef31d01e60668580410b00faa4deb04b34a6ac8966837ec39",
+      "bytes": 7517
+    },
+    "README.md": {
+      "sha256": "bcfa48ce5d08554ff196a0ad01a1df2f9174ab00ba9af40538239cae08d484b9",
+      "bytes": 4053
+    },
+    "Source/App/Main.cpp": {
+      "sha256": "df98310160197d83dd6df9911e3333057738264180055998fb0a25270aa08fae",
+      "bytes": 18947
+    },
+    "Source/App/RuntimeChecks.h": {
+      "sha256": "37077c265b902df55c668c9487434ce6e32c606eeb3b1f5a6190a3a0f5de82d1",
+      "bytes": 20523
+    },
+    "Source/App/SpeakerCheck.h": {
+      "sha256": "09bab522d718b3037597343eedecff18fe8d37e5a02d4c00789518737215f164",
+      "bytes": 3508
+    },
+    "Source/Audio/SystemInput.cpp": {
+      "sha256": "57075b76b3b21add50f3c7efd4ff5e8e9955939089794d140b2a435836a3965f",
+      "bytes": 9823
+    },
+    "Source/Audio/SystemInput.h": {
+      "sha256": "d1278a8fe285a20eb35cb96f6c7705a62a3d3be1d14b61d4b0fba8b4bcfccc79",
+      "bytes": 832
+    },
+    "Source/Core/AudioAnalysis.h": {
+      "sha256": "20606bbf15de63006df7e22554162dd276a5295bdc5c3831dd3163fdc4dfb64d",
+      "bytes": 7087
+    },
+    "Source/Core/Controls.h": {
+      "sha256": "580bbfd53c3d51fdc48d654b21db72bc9dc51dd9c527cd5775f9fa956eee25ee",
+      "bytes": 7534
+    },
+    "Source/Core/Cycles.h": {
+      "sha256": "0bc26af3a68e6267270a39b19cb5b3dc42f071c562f12530f2e248633435090b",
+      "bytes": 826
+    },
+    "Source/Core/Graphics.h": {
+      "sha256": "644618a0b3c9fcb85593b7f28f30428ac8a47efda05662a858961541fcf5e591",
+      "bytes": 1628
+    },
+    "Source/Core/Lyrics.h": {
+      "sha256": "71ae6b359f3fddf0b2022f8b0cc6dadf4a8184e08f30d8a17c7d015b770c9a02",
+      "bytes": 502
+    },
+    "Source/Core/PerformanceMappings.h": {
+      "sha256": "85b7ff589372b399057c462de851270661fa512792928615fae609496d80dbda",
+      "bytes": 3655
+    },
+    "Source/Core/Presets.h": {
+      "sha256": "443c64ad85f6433893305ca61c6dcc6de8837ff4c968a1ab7e186c74001f8055",
+      "bytes": 14560
+    },
+    "Source/Engine/EngineFiles.cpp": {
+      "sha256": "c474efabbeef86d62e9f3ab7dc7b835fa28b752a725d774b1fee655d74de8780",
+      "bytes": 7467
+    },
+    "Source/Engine/EngineFiles.h": {
+      "sha256": "af12c04ffc8ebea3fcc5c711049f9a78197f8e94c080489ff758476ae8d72541",
+      "bytes": 340
+    },
+    "Source/Engine/EngineSurface.cpp": {
+      "sha256": "63c1f3e975cc6d6e9d53cfa62de0e73680f5e416f8e8693e4277568d2a57c21f",
+      "bytes": 8158
+    },
+    "Source/Engine/EngineSurface.h": {
+      "sha256": "ea184c6c1353147e13a70549c1c2ce641ef581c27c5aaeb9f4d79e6184628de0",
+      "bytes": 671
+    },
+    "Source/Engine/PanelTheme.cpp": {
+      "sha256": "eceac29e4df4d6b6cf9a4fce0b4b693c4d2c0f2033e519add70227a72153f533",
+      "bytes": 11145
+    },
+    "Source/Engine/PanelTheme.h": {
+      "sha256": "1a1f6ef7d75a585156ef4b04f7d328650a76c179272a5d85bfa5c8ec7abffa37",
+      "bytes": 601
+    },
+    "Source/Engine/VelEngine.cpp": {
+      "sha256": "e1c26fc3a129cc80bf9a7f2a5ca53bf4bf6f81028045268cc0988bd1a830f891",
+      "bytes": 72373
+    },
+    "Source/Engine/VelEngine.h": {
+      "sha256": "7235fe5d1ec1188a1cd418a9987d7e9f125a4adea545f971fab7a831309b235e",
+      "bytes": 6805
+    },
+    "Source/Output/Recorder.cpp": {
+      "sha256": "258c34fbdc4aa26fb3022ffed4a000cff7015047fc53201ea5f2c2c9b5eebbce",
+      "bytes": 13923
+    },
+    "Source/Output/Recorder.h": {
+      "sha256": "15089796477b4f57482860f97d078300cb0d79381b51ba521548f347272e185a",
+      "bytes": 1543
+    },
+    "Source/Plugin/Dialogs.cpp": {
+      "sha256": "109078d2b0bf033568a6d9e4c9b3ea2d5454d12c4f91c03cdd24614513b1bea1",
+      "bytes": 40730
+    },
+    "Source/Plugin/Editor.cpp": {
+      "sha256": "f8f0f1804c3934544a1489434ee42276c69131bd955861f109992f6a46b5c9b8",
+      "bytes": 98473
+    },
+    "Source/Plugin/Editor.h": {
+      "sha256": "85207a979427a5fa328c85e3f066e5a9d27c30d8916cdbd2b51436c510da6484",
+      "bytes": 8182
+    },
+    "Source/Plugin/EditorChecks.cpp": {
+      "sha256": "1dfa6b622bfe6baec280de0c5b72f5bbd9cf3442ad27d13906ab97067a09eefc",
+      "bytes": 54499
+    },
+    "Source/Plugin/EmbeddedFrame.h": {
+      "sha256": "c9341d64a4dd689a8d74656bad15c66e771c6135f5f0291b7ea1161e3fb4f2d4",
+      "bytes": 494
+    },
+    "Source/Plugin/Processor.cpp": {
+      "sha256": "8c8c0035f5a7db2ad94dbb5218374ae23ee1e34474ef8a04c3afb10cf011e566",
+      "bytes": 18374
+    },
+    "Source/Plugin/Processor.h": {
+      "sha256": "4de073cfdcd2d4259de1a94de5e9c63585de2d8ee4f88ac652f6958e5d5ce967",
+      "bytes": 3613
+    },
+    "Source/Plugin/RecordingChecks.cpp": {
+      "sha256": "2232c52d2542bce54b4487264907d880139af49b2d51ca5b1d8284c90927c04c",
+      "bytes": 4465
+    },
+    "Source/Plugin/TransitionChecks.cpp": {
+      "sha256": "de7c379a42dcb5c7f420f5796d235e708152b1ee1652763dcc6f505fa9b6ca8e",
+      "bytes": 4469
+    },
+    "Source/Visual/Canvas.cpp": {
+      "sha256": "2e553fc8bc1f7a8f43f340a54312b3030a5a3f745b222601dc42f57acbc11391",
+      "bytes": 30741
+    },
+    "Source/Visual/Canvas.h": {
+      "sha256": "e384de976b0a52517950c079336f7cd54731704fb14d331582951b135becf9e3",
+      "bytes": 2318
+    },
+    "Source/Visual/NativeGeometry.cpp": {
+      "sha256": "b3dbbf5a3815a17e65ece451e737c738d4134b591008c12d14c0344d0387b60f",
+      "bytes": 8657
+    },
+    "Source/Visual/NativeGeometry.h": {
+      "sha256": "23ce63778d890def7695cacc4fdc025905c0783880314d9d9e8a21b730348fd6",
+      "bytes": 276
+    },
+    "Source/Visual/NativeShaders.h": {
+      "sha256": "6aa9c0606fe12d4c722237b3bf7168377072f0c8e8c3cb47826d50470d34b8b0",
+      "bytes": 5445
+    },
+    "Source/Visual/ReferenceFx.cpp": {
+      "sha256": "4da4a5964706ecd87d8348627b0f2920cfd04ca48b760d5699b1d5ab28f76dce",
+      "bytes": 18993
+    },
+    "Source/Visual/ReferenceFx.h": {
+      "sha256": "20e2e42bf3e748c515b5aaaef0fb3bece51a7c987bfeb8e4863dbc441ab103bb",
+      "bytes": 1407
+    },
+    "Source/Visual/Scenes.cpp": {
+      "sha256": "90eb48873f78f368c79218164b6b925f58b19eb8514577325e70ce19dc36854c",
+      "bytes": 16603
+    },
+    "Source/Visual/Scenes.h": {
+      "sha256": "35304f6546e5f6de1fa19ffe3f19df1d6b84baed59d4aa631f3aaefbe9de3c65",
+      "bytes": 8435
+    },
+    "Source/Visual/TextScene.cpp": {
+      "sha256": "4ecd30a45ca9c71913b604880ff42ab489db19b76e811898844fa72ff7f6ab07",
+      "bytes": 13631
+    },
+    "docs/ARCHITECTURE.md": {
+      "sha256": "dd78d907ce3a73affeb36ec815249c0f97288a07003e2eaa32fcee844b0a1c8a",
+      "bytes": 3866
+    },
+    "docs/AUDIO.md": {
+      "sha256": "788d8ffc7067dc9ee79d64e93ebcbe596b6cde71aad4e2428ab430628e22a5a0",
+      "bytes": 2429
+    },
+    "docs/COMPATIBILITY.md": {
+      "sha256": "01e0dda6460e7f64c5841440a6801af10a547532127be68b03f20d9ec811c4dd",
+      "bytes": 1735
+    },
+    "docs/DEFAULTS.md": {
+      "sha256": "5d3b8d4aeae822ec91fabd67e68b2266ca6b02012e91f2b8720f7ddf7349efd4",
+      "bytes": 3017
+    },
+    "docs/ENCODER.md": {
+      "sha256": "6b3ab2b99b6f1219f21c3aae2ac538bd79f82882ef564b3e089bc3018bfc1978",
+      "bytes": 2230
+    },
+    "docs/FEATURES.md": {
+      "sha256": "d722f90277964e11621303dca138aabf056f382e03da0ffe04e4519691d32bf2",
+      "bytes": 1942
+    },
+    "docs/NATIVE-FX.md": {
+      "sha256": "ef074bb810fa26dbde285a12f76efefbb95ac624f7f44108419defca999c2b22",
+      "bytes": 4435
+    },
+    "docs/ORIGINAL-ENGINE.md": {
+      "sha256": "6d47442334776f718ab37df18156b8596adbe29a6e8082883393a2e77114c95e",
+      "bytes": 31283
+    },
+    "docs/PRIVATE-TESTING.md": {
+      "sha256": "01148267d3f364a31086c46ce6d27875ad58648b2fdfe04a75091f3118bf231e",
+      "bytes": 9935
+    },
+    "docs/RESEARCH.md": {
+      "sha256": "e8a5a45e4d37f311e4074266669e8fdb1c639f2ff2f7cf5c37e4902b7994d258",
+      "bytes": 1639
+    },
+    "docs/REVISION-STATUS.md": {
+      "sha256": "193f92de9910d32faab578726f47e1c9799250ef448f53017ad8af467de3000a",
+      "bytes": 17162
+    },
+    "docs/TEXT-FONTS.md": {
+      "sha256": "0446a41f40bac4cc2c65050d3d959eb70ac56d0d3d973c9c4f237a09fbab5ade",
+      "bytes": 1646
+    },
+    "docs/VALIDATION.md": {
+      "sha256": "6541aca52a0da74cc0cc9ee56f6806ddee5e53024616f6c49bf8f095cae83840",
+      "bytes": 13264
+    },
+    "docs/WINDOWS-RELEASE.md": {
+      "sha256": "fe476d862375f55fa99fa46f5c7e772c4a30fe2cf6af0987811f5c35566c5fb1",
+      "bytes": 4085
+    },
+    "installer/linux/header.sh": {
+      "sha256": "cd936b9790a01c53ee8a696d34b5042c3848f956df7e4ec13c50dae9326425f6",
+      "bytes": 2254
+    },
+    "installer/windows/GRID-ARVx.iss": {
+      "sha256": "5276f59518043eb6bfab8c2e69293a6107cc45d16b6e4b1949a0ee58a540c3a5",
+      "bytes": 3314
+    },
+    "scripts/encoder.py": {
+      "sha256": "309b1893413b82136230b3346d545029b57aaaea4f36de5eef2bb566e4b73d44",
+      "bytes": 6599
+    },
+    "scripts/installers.py": {
+      "sha256": "76e4565425b4a3131a522ce2e5b9634c73d38466b3861a2a553fcf87518491a7",
+      "bytes": 5181
+    },
+    "scripts/notices.py": {
+      "sha256": "ee57bce8452eedbe7a2e871c5e7ac3de8dfcc8a4499a72b51eeda74cbf6aaa53",
+      "bytes": 1450
+    },
+    "scripts/private_preview.py": {
+      "sha256": "af56c36bbdd375f46d4e422a2d2a881e899ffe9a90da9e06caf650769ac96d97",
+      "bytes": 6503
+    },
+    "scripts/source_archive.py": {
+      "sha256": "14dd50ee18087ed84286a9025597da3800550ef5bb73af4612e49979fd35eec0",
+      "bytes": 2662
+    },
+    "scripts/stage.py": {
+      "sha256": "aa29e2d5e7e4d173654541c1b4a3890b452bed84e422138a880cd4e06b3293f2",
+      "bytes": 2532
+    },
+    "scripts/windows_release.py": {
+      "sha256": "be682bd8ad107119df58b0d57f722c3e7a911d9e5480e966d7252182538a70f6",
+      "bytes": 5623
+    },
+    "tests/audio_tests.cpp": {
+      "sha256": "0f13ac04ac978c1ae6bd670dd407cf69bb38d135bf052f1604f331aee46922df",
+      "bytes": 8084
+    },
+    "tests/check_project.py": {
+      "sha256": "3b8390b8b4b9d33d4e0c86199af4e92cdd46020e3e19fd0bc0b6de6206acc1d0",
+      "bytes": 1556
+    },
+    "tests/clap_smoke.py": {
+      "sha256": "754e0853a4fd4654e7c5d835900fcbbe46bf639728d05275342c854e9a92d51b",
+      "bytes": 8141
+    },
+    "tests/control_tests.cpp": {
+      "sha256": "6d866d3b9c33e4aaa3b4dbbb2e03099b4e87bf24424538d177160bab15e7f309",
+      "bytes": 4015
+    },
+    "tests/fx_image_checks.py": {
+      "sha256": "110459df3e759f437c30ce48b79a8215c264ac07822d91e033d92e46094eb354",
+      "bytes": 6036
+    },
+    "tests/native_fx_image_checks.py": {
+      "sha256": "701af8236e836080d4d2dafad66b6479fb61737310e6570c2de46f47838cdf47",
+      "bytes": 3035
+    },
+    "tests/packaging_tests.py": {
+      "sha256": "b60c467d2ad789d433f1be10772a454de55d304a346311a95adb637cc106ba0b",
+      "bytes": 3963
+    },
+    "tests/performance_mapping_tests.cpp": {
+      "sha256": "b5f7177652b34e513daef673f169d7e2e53c518ce76a47f0a069acb4b5b6d9cc",
+      "bytes": 4939
+    },
+    "tests/private_preview_tests.py": {
+      "sha256": "901453e909322a8d4840b73ddec6a1c12e6034648e0bb7fd2b08fe9c1615d425",
+      "bytes": 4163
+    },
+    "tests/windows_release_tests.py": {
+      "sha256": "65b2c5293467a8a39ff4007eedc2e0767ad96891a299a3f21c4d8067989fdb17",
+      "bytes": 4184
+    },
+    "tools/NativeEngineProbe.cpp": {
+      "sha256": "88ed6590b5a2cf89bfcf629c9dc03aa8ed4ff334a3efdc68ad4ae088e1662936",
+      "bytes": 33198
+    },
+    "vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/Resources/moduleinfo.json": {
+      "sha256": "10314a0ae891f2628b2fd56bb9c84815a3293f1acd13a6a7da740ea71105e867",
+      "bytes": 1067
+    },
+    "vendor/VelEngine/Windows/x64/Vel Engine.vst3/Contents/x86_64-win/Vel Engine.vst3": {
+      "sha256": "110757113effef4c55d033904b9819a856a6c57f0749dc7b4809740e6c0a6b59",
+      "bytes": 10401280
+    },
+    "vendor/VelEngine/Windows/x64/Vel Engine.vst3/Plugin.ico": {
+      "sha256": "6b4ac2ed89728234d9856593a6b543d7a800c4a2b87c485cbd71ee72d59066af",
+      "bytes": 31155
+    },
+    "vendor/VelEngine/Windows/x64/Vel Engine.vst3/desktop.ini": {
+      "sha256": "34b7fb2daafdf887abf4397c52a6c69ce5c233466ac8f3100708bcf6f4984a82",
+      "bytes": 80
+    }
+  }
+}

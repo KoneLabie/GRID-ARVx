@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 def version():
-    return re.search(r"project\(GRID_ARVx VERSION ([0-9.]+)", (ROOT / "CMakeLists.txt").read_text()).group(1)
+    return re.search(r"project\(GRID_ARVx VERSION ([0-9.]+)", (ROOT / "CMakeLists.txt").read_text(encoding='utf-8')).group(1)
 def linux(stage, output):
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
@@ -34,6 +34,7 @@ def macos(stage, output):
     shutil.copy2(stage / "LICENSE-NOTICE.md", notices)
     for folder in ["docs", "ThirdPartyNotices"]:
         if (stage / folder).exists(): shutil.copytree(stage / folder, notices / folder)
+    shutil.copytree(stage / "Tools", notices / "tools")
     notice_id = "com.konelabie.gridarvx.notices"
     subprocess.run(["pkgbuild", "--root", str(notices_root), "--identifier", notice_id,
                     "--version", version(), "--install-location", "/", str(work / "Notices.pkg")], check=True)
@@ -67,7 +68,7 @@ def windows(stage, output):
     subprocess.run([iscc, f"/DStageDir={stage.resolve()}", f"/DAppVersion={version()}",
                     f"/O{output.parent.resolve()}", str(ROOT / "installer/windows/GRID-ARVx.iss")], check=True)
 def build(platform, stage, output):
-    required = ["Standalone", "VST3", "CLAP"] + (["AU"] if platform == "macOS" else [])
+    required = ["Standalone", "VST3", "CLAP", "Tools"] + (["AU"] if platform == "macOS" else [])
     for component in required:
         path = stage / component
         if not path.is_dir() or not any(path.iterdir()): raise RuntimeError(f"Missing installer component: {component}")

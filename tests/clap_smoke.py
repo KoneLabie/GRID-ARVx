@@ -64,11 +64,12 @@ def main(path):
     assert call(plugin.init, C.c_bool, P)(plugin_ptr)
     extension = call(plugin.extension, P, P, C.c_char_p)
     params = C.cast(extension(plugin_ptr, b"clap.params"), C.POINTER(Params)).contents
-    assert call(params.count, C.c_uint32, P)(plugin_ptr) == 4
+    parameter_count = call(params.count, C.c_uint32, P)(plugin_ptr); assert parameter_count >= 48
     sensitivity = None
-    for index in range(4):
+    for index in range(parameter_count):
         info = ParamInfo(); assert call(params.info, C.c_bool, P, C.c_uint32, P)(plugin_ptr, index, C.byref(info))
-        if info.name == b"Sensitivity": sensitivity = info
+        assert info.minimum == 0 and info.maximum == 127, "All control parameters must expose 0-127"
+        if info.name == b"Intensity": sensitivity = info
     assert sensitivity is not None
     zero_size = F(C.c_uint32, P)(lambda *_: 0)
     zero_get = F(P, P, C.c_uint32)(lambda *_: None)
@@ -82,17 +83,17 @@ def main(path):
         call(params.flush, None, P, P, P)(plugin_ptr, C.byref(events), C.byref(outgoing))
     def value():
         result = C.c_double(); assert call(params.value, C.c_bool, P, C.c_uint32, P)(plugin_ptr, sensitivity.id, C.byref(result)); return result.value
-    set_sensitivity(2.0); assert abs(value() - 2.0) < 0.001
+    set_sensitivity(93.0); assert abs(value() - 93.0) < 0.001
     state = C.cast(extension(plugin_ptr, b"clap.state"), C.POINTER(State)).contents
     saved = bytearray()
     write = F(C.c_int64, P, P, C.c_uint64)(lambda _, data, size: (saved.extend(C.string_at(data, size)), size)[1])
     stream = Stream(None, pointer(write)); assert call(state.save, C.c_bool, P, P)(plugin_ptr, C.byref(stream))
-    assert saved; set_sensitivity(0.5); offset = 0
+    assert saved; set_sensitivity(14.0); offset = 0
     def read(_, destination, requested):
         nonlocal offset
         data = bytes(saved[offset:offset + requested]); C.memmove(destination, data, len(data)); offset += len(data); return len(data)
     reader = F(C.c_int64, P, P, C.c_uint64)(read); stream = Stream(None, pointer(reader))
-    assert call(state.load, C.c_bool, P, P)(plugin_ptr, C.byref(stream)) and abs(value() - 2.0) < 0.001
+    assert call(state.load, C.c_bool, P, P)(plugin_ptr, C.byref(stream)) and abs(value() - 93.0) < 0.001
     assert call(plugin.activate, C.c_bool, P, C.c_double, C.c_uint32, C.c_uint32)(plugin_ptr, 48000.0, 1, 512)
     inputs = [(C.c_float * 512)(*[((i % 73) - 36) / 80 for i in range(512)]) for _ in range(2)]
     outputs = [(C.c_float * 512)() for _ in range(2)]
