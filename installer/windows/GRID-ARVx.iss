@@ -12,13 +12,13 @@
 AppId={{E431C1A4-79B3-4517-A151-17CE74407AE9}
 AppName={#AppName}
 AppVersion={#AppVersion}
-AppPublisher=Kone Labie
+AppPublisher=Cenaceae
 #if Int(StandaloneOnly)
 DefaultDirName={localappdata}\Programs\GRID-ARVx
 PrivilegesRequired=lowest
 MinVersion=10.0.19041
 #else
-DefaultDirName={autopf}\Kone Labie\GRID-ARVx
+DefaultDirName={autopf}\Cenaceae\GRID-ARVx
 PrivilegesRequired=admin
 #endif
 DefaultGroupName=GRID-ARVx
@@ -50,7 +50,7 @@ Source: "{#StageDir}\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recurs
   #if Int(StandaloneOnly)
 Source: "{#StageDir}\Tools\*"; DestDir: "{app}\tools"; Flags: ignoreversion recursesubdirs createallsubdirs
   #else
-Source: "{#StageDir}\Tools\*"; DestDir: "{commoncf}\KoneLabie\GRID-ARVx\tools"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#StageDir}\Tools\*"; DestDir: "{commoncf}\Cenaceae\GRID-ARVx\tools"; Flags: ignoreversion recursesubdirs createallsubdirs
   #endif
 #endif
 #if Int(StandaloneOnly)

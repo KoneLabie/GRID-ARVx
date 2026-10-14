@@ -81,7 +81,7 @@ This is an implementation in progress, not the final delivery ZIP. Source remain
 
 ## Agreed scope
 
-Nine aesthetic families: Oscilloscope, Lava Lamp, Interstellar, Code, Basic Colors, TV, Pixel, Text, Plasma. Arcade excluded. The custom home screen has Lab, Multiple, Performance, Settings; Multiple and Performance are disabled for later development. Company: Kone Labie.
+Nine aesthetic families: Oscilloscope, Lava Lamp, Interstellar, Code, Basic Colors, TV, Pixel, Text, Plasma. Arcade excluded. The custom home screen has Lab, Multiple, Performance, Settings; Multiple and Performance are disabled for later development. Company: Cenaceae.
 
 Four FX groups: Texture (Noise, Grain, CRT, Thresh), Dither (Symbol, Star, Flower, Hex), Track (Basic, System, Bracket, Glow, Terminal), Glass (Ball, 2x2, Full, Flower, Cross, Burst). Each has amount, profile selection, and a reactive toggle. IN is analysis gain; audio output remains unchanged. INT scales visual response. Speed/Glow and colors are contextual. Color/preset Cycle intervals use beats; lyrics have a separate beat/seconds cycle.
 

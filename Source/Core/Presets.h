@@ -13,7 +13,7 @@ public:
   explicit Presets(Processor &p, juce::File customRoot = {})
       : processor(p), root(juce::File::getSpecialLocation(
                                juce::File::userApplicationDataDirectory)
-                               .getChildFile("KoneLabie/GRID-ARVx/Presets")) {
+                               .getChildFile("Cenaceae/GRID-ARVx/Presets")) {
     if (customRoot != juce::File())
       root = customRoot;
     for (int c = 0; c < 9; ++c) {

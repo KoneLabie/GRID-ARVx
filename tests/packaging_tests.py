@@ -31,10 +31,10 @@ with tempfile.TemporaryDirectory() as directory:
         subprocess.run(["bash", str(output), options], env={**os.environ, "HOME": str(home)}, check=True, capture_output=True)
         assert (home / ".vst3/GRID-ARVx.vst3").exists() == (expected in ("VST3", "All"))
         assert (home / ".clap/GRID-ARVx.clap").exists() == (expected in ("CLAP", "All"))
-        assert (home / ".local/opt/KoneLabie/GRID-ARVx/GRID-ARVx").exists() == (expected in ("Standalone", "All"))
+    assert (home / ".local/opt/Cenaceae/GRID-ARVx/GRID-ARVx").exists() == (expected in ("Standalone", "All"))
         if expected in ("Standalone", "All"):
-            assert (home / ".local/share/applications/konelabie-grid-arvx.desktop").exists()
-        assert (home / ".local/share/KoneLabie/GRID-ARVx/tools/ffmpeg").exists()
+        assert (home / ".local/share/applications/cenaceae-grid-arvx.desktop").exists()
+    assert (home / ".local/share/Cenaceae/GRID-ARVx/tools/ffmpeg").exists()
     no_changes = root / "invalid"; no_changes.mkdir()
     result = subprocess.run(["bash", str(output), "--standalone", "--invalid"],
         env={**os.environ, "HOME": str(no_changes)}, capture_output=True)
@@ -52,7 +52,7 @@ with tempfile.TemporaryDirectory() as directory:
     assert commands.call_count == 6, "Expected four components, required notices, and one product package"
     work = root / "macos-work"
     assert (work / "Standalone/Applications/GRID-ARVx.app/Contents/Info.plist").exists()
-    assert (work / "Notices/Library/Application Support/KoneLabie/GRID-ARVx/tools/Source/BUILD.json").exists()
+    assert (work / "Notices/Library/Application Support/Cenaceae/GRID-ARVx/tools/Source/BUILD.json").exists()
     xml = ET.parse(work / "distribution.xml")
     assert {node.attrib["id"] for node in xml.findall("choice")} == {"Standalone", "VST3", "AU", "CLAP", "Notices"}
 print("PASS: Linux installer component selection, desktop shortcut, bad selections, missing components")

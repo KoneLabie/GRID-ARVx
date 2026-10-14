@@ -21,7 +21,7 @@ fi
 for option in "$@"; do
   case "$option" in --all|--standalone|--vst3|--clap) ;; *) echo "Unknown option: $option" >&2; exit 2 ;; esac
 done
-notices_dir="$HOME/.local/share/KoneLabie/GRID-ARVx"
+notices_dir="$HOME/.local/share/Cenaceae/GRID-ARVx"
 mkdir -p "$notices_dir"
 cp "$work_dir/LICENSE-NOTICE.md" "$notices_dir/"
 for folder in docs ThirdPartyNotices; do
@@ -38,13 +38,13 @@ for option in "$@"; do
   for component in "${selected[@]}"; do
     case "$component" in
       VST3) target="$HOME/.vst3" ;; CLAP) target="$HOME/.clap" ;;
-      Standalone) target="$HOME/.local/opt/KoneLabie/GRID-ARVx" ;;
+      Standalone) target="$HOME/.local/opt/Cenaceae/GRID-ARVx" ;;
     esac
     mkdir -p "$target"; cp -R "$work_dir/$component/." "$target/"
     if [[ "$component" == Standalone ]]; then
       chmod +x "$target/GRID-ARVx"
       mkdir -p "$HOME/.local/share/applications"
-      cat > "$HOME/.local/share/applications/konelabie-grid-arvx.desktop" <<DESKTOP
+      cat > "$HOME/.local/share/applications/cenaceae-grid-arvx.desktop" <<DESKTOP
 [Desktop Entry]
 Type=Application
 Name=GRID-ARVx

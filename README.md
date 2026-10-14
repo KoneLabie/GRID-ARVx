@@ -1,4 +1,4 @@
-# GRID-ARVx — Kone Labie
+# GRID-ARVx — Cenaceae
 
 GRID-ARVx 0.4.18 is a Windows audio-reactive visualizer with a custom UI and an
 adjacent Vel Engine runtime. This private testing build includes Lab, Multiple
@@ -11,14 +11,15 @@ Older independent-renderer targets remain in the source for future development.
 
 ## Install
 
-Run `GRID-ARVx-0.4.18_Windows-Setup.exe`. The Inno Setup installer installs
+Run `GRID-ARVx-0.4.18-Windows-x64-Setup.exe`. The Inno Setup installer installs
 the app and its engine per user, adds shortcuts and includes an uninstaller.
 Visual Lab Pro does not need to be installed. Target: Windows 10 version 2004+
 or Windows 11, with compatible GPU/OpenGL and audio drivers.
 
-No existing home folder named Kone or KoneLabie is required. The installer uses
+No existing home folder named Cenaceae is required. The installer uses
 the current account's Windows Local AppData directory. Settings and presets use
-the current account's AppData directory; GRID creates its publisher/application folders automatically. The engine loads from the `Engine`
+the current account's AppData directory; GRID creates its `Cenaceae/GRID-ARVx`
+publisher/application folders automatically. The engine loads from the `Engine`
 folder beside the installed executable, independently of the developer's folder
 layout. Linux/macOS engine experiments are separate and are not in this package.
 
@@ -76,3 +77,9 @@ GitHub Actions has not been run by this agent. The installer is unsigned.
 For playback analysis, use Settings → Audio / MIDI Devices → Speakers / system
 audio, then select the output device playing music. Windows WASAPI loopback
 does not require a virtual microphone.
+
+- [Testing notes](docs/PRIVATE-TESTING.md)
+- [Validation history](docs/VALIDATION.md)
+- [Engine integration and history](docs/ORIGINAL-ENGINE.md)
+- [Audio](docs/AUDIO.md), [encoder](docs/ENCODER.md), [defaults](docs/DEFAULTS.md)
+- [Compatibility boundaries and older targets](docs/COMPATIBILITY.md)

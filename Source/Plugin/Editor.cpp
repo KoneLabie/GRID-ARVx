@@ -823,7 +823,7 @@ void Editor::paintUi(juce::Graphics &g) {
                juce::Justification::centredBottom);
     g.setColour(muted);
     g.setFont(juce::FontOptions(14));
-    g.drawText("KONE LABIE / AUDIO REACTIVE VISUAL LAB", 0, 170, uiHost().getWidth(), 30,
+    g.drawText("CENACEAE / AUDIO REACTIVE VISUAL LAB", 0, 170, uiHost().getWidth(), 30,
                juce::Justification::centred);
   } else if (!uiHidden) {
     g.setColour(juce::Colour(0xe6101011));

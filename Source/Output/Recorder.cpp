@@ -207,18 +207,18 @@ juce::File findEncoder(const juce::String &preferred) {
 #if JUCE_WINDOWS
   auto common = juce::File(juce::SystemStats::getEnvironmentVariable(
       "CommonProgramFiles", "C:/Program Files/Common Files"));
-  candidates.add(common.getChildFile("KoneLabie/GRID-ARVx/tools/ffmpeg.exe"));
+  candidates.add(common.getChildFile("Cenaceae/GRID-ARVx/tools/ffmpeg.exe"));
   candidates.add(juce::File("C:/ffmpeg/bin/ffmpeg.exe"));
 #elif JUCE_MAC
   candidates.add(app.getChildFile("Contents/Resources/tools/ffmpeg"));
   candidates.add(juce::File(
-      "/Library/Application Support/KoneLabie/GRID-ARVx/tools/ffmpeg"));
+      "/Library/Application Support/Cenaceae/GRID-ARVx/tools/ffmpeg"));
   candidates.add(juce::File("/opt/homebrew/bin/ffmpeg"));
   candidates.add(juce::File("/usr/local/bin/ffmpeg"));
 #else
   candidates.add(
       juce::File::getSpecialLocation(juce::File::userHomeDirectory)
-          .getChildFile(".local/share/KoneLabie/GRID-ARVx/tools/ffmpeg"));
+          .getChildFile(".local/share/Cenaceae/GRID-ARVx/tools/ffmpeg"));
   candidates.add(juce::File("/usr/bin/ffmpeg"));
 #endif
   for (auto candidate : candidates)

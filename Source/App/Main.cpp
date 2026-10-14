@@ -118,7 +118,7 @@ public:
     }
     directory_ =
         juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
-            .getChildFile("KoneLabie")
+            .getChildFile("Cenaceae")
             .getChildFile("GRID-ARVx");
     if (selfTest_)
       directory_ =

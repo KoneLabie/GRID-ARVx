@@ -157,7 +157,7 @@ juce::Result VelEngine::open(const juce::File &bundle,juce::File isolatedProfile
   moduleReference=LoadLibraryW(runtime.getFullPathName().toWideCharPointer());
   const auto profile=isolatedProfile==juce::File{}?
     juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
-      .getChildFile("KoneLabie/GRID-ARVx/VelEngine"):isolatedProfile;
+      .getChildFile("Cenaceae/GRID-ARVx/VelEngine"):isolatedProfile;
   if(!moduleReference || !connectEngineFiles(moduleReference,profile))
     return juce::Result::fail("Vel Engine settings integration could not be connected.");
   formats.addFormat(new juce::VST3PluginFormat());

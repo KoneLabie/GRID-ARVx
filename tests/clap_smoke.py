@@ -51,14 +51,14 @@ def main(path):
     assert call(entry.init, C.c_bool, C.c_char_p)(str(path).encode())
     no_extension = F(P, P, C.c_char_p)(lambda *_: None)
     no_request = F(None, P)(lambda *_: None)
-    host = Host(Version(1, 2, 0), None, b"GRID-ARVx test host", b"Kone Labie", b"", b"1.0",
+    host = Host(Version(1, 2, 0), None, b"GRID-ARVx test host", b"Cenaceae", b"", b"1.0",
         pointer(no_extension), pointer(no_request), pointer(no_request), pointer(no_request))
     factory_ptr = call(entry.factory, P, C.c_char_p)(b"clap.plugin-factory")
     assert factory_ptr; factory = C.cast(factory_ptr, C.POINTER(Factory)).contents
     assert call(factory.count, C.c_uint32, P)(factory_ptr) == 1
     descriptor_ptr = call(factory.descriptor, P, P, C.c_uint32)(factory_ptr, 0)
     descriptor = C.cast(descriptor_ptr, C.POINTER(Descriptor)).contents
-    assert descriptor.id == b"com.konelabie.gridarvx" and descriptor.name == b"GRID-ARVx"
+    assert descriptor.id == b"com.cenaceae.gridarvx" and descriptor.name == b"GRID-ARVx"
     plugin_ptr = call(factory.create, P, P, P, C.c_char_p)(factory_ptr, C.byref(host), descriptor.id)
     assert plugin_ptr; plugin = C.cast(plugin_ptr, C.POINTER(Plugin)).contents
     assert call(plugin.init, C.c_bool, P)(plugin_ptr)

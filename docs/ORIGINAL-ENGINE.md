@@ -26,7 +26,7 @@ Visual Lab Pro locations. The original installed EXE/VST3 are never patched.
 Module SHA-256: `110757113effef4c55d033904b9819a856a6c57f0749dc7b4809740e6c0a6b59`.
 
 Named preferences and library file operations in this loaded module are redirected
-from the provider's two AppData roots to `%APPDATA%/KoneLabie/GRID-ARVx/VelEngine`.
+from the provider's two AppData roots to `%APPDATA%/Cenaceae/GRID-ARVx/VelEngine`.
 Native presets and setlists live under `VelEngine/Library/Presets`. This is separate
 from GRID Lab's per-mode JSON preset folders. File imports outside those roots pass
 through. In-memory import-table hooks affect this module only. The temporary

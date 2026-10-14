@@ -25,17 +25,17 @@ def macos(stage, output):
     if work.exists(): shutil.rmtree(work)
     work.mkdir(parents=True)
     distribution = ET.Element("installer-gui-script", minSpecVersion="2")
-    ET.SubElement(distribution, "title").text = "GRID-ARVx by Kone Labie"
+    ET.SubElement(distribution, "title").text = "GRID-ARVx by Cenaceae"
     ET.SubElement(distribution, "options", customize="always", **{"require-scripts": "false", "hostArchitectures": "arm64,x86_64"})
     outline = ET.SubElement(distribution, "choices-outline")
     notices_root = work / "Notices"
-    notices = notices_root / "Library/Application Support/KoneLabie/GRID-ARVx"
+    notices = notices_root / "Library/Application Support/Cenaceae/GRID-ARVx"
     notices.mkdir(parents=True)
     shutil.copy2(stage / "LICENSE-NOTICE.md", notices)
     for folder in ["docs", "ThirdPartyNotices"]:
         if (stage / folder).exists(): shutil.copytree(stage / folder, notices / folder)
     shutil.copytree(stage / "Tools", notices / "tools")
-    notice_id = "com.konelabie.gridarvx.notices"
+    notice_id = "com.cenaceae.gridarvx.notices"
     subprocess.run(["pkgbuild", "--root", str(notices_root), "--identifier", notice_id,
                     "--version", version(), "--install-location", "/", str(work / "Notices.pkg")], check=True)
     ET.SubElement(outline, "line", choice="Notices")
@@ -49,7 +49,7 @@ def macos(stage, output):
         if not source.exists(): raise RuntimeError(f"Missing {component} stage")
         payload = work / component / location
         shutil.copytree(source, payload, symlinks=True)
-        identifier = "com.konelabie.gridarvx." + component.lower()
+        identifier = "com.cenaceae.gridarvx." + component.lower()
         package = work / (component + ".pkg")
         subprocess.run(["pkgbuild", "--root", str(work / component), "--identifier", identifier,
                         "--version", version(), "--install-location", "/", str(package)], check=True)

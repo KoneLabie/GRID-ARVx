@@ -108,7 +108,7 @@ The scene GL layer should never cover either setup menu.
    finalization in each workspace. Scene-only recordings should exclude controls.
 
 GRID Lab presets use per-mode JSON folders. Native Multiple/Performance use their
-own library formats under `%APPDATA%/KoneLabie/GRID-ARVx/VelEngine/Library/Presets`.
+own library formats under `%APPDATA%/Cenaceae/GRID-ARVx/VelEngine/Library/Presets`.
 They do not automatically read Lab JSON files. Native image/font drops follow the
 original panel's import behavior; import lyric TXT files through Lab Text.
 

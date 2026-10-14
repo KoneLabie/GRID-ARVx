@@ -46,8 +46,8 @@ It duplicates frames to preserve timing, handles duration limits and finalizes o
 the UI timer. NVIDIA preflight also runs outside the message thread.
 
 Plugin IDs and the app settings root are unique to this project:
-`com.konelabie.gridarvx`, manufacturer `KnLb`, plugin `GAvx`, and
-`<user application data>/KoneLabie/GRID-ARVx`. User preset saves copy image/font
+`com.cenaceae.gridarvx`, manufacturer `Cenaceae`, plugin `GAvx`, and
+`<user application data>/Cenaceae/GRID-ARVx`. User preset saves copy image/font
 assets with relative paths. Unsaved complete state can still refer to machine-local
 files; those files must accompany projects moved between machines.
 

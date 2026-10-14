@@ -84,7 +84,7 @@ if(GRID_BUILD_PLUGINS)
         list(APPEND GRID_FORMATS AU)
     endif()
     juce_add_plugin(GridARVxPlugin
-        COMPANY_NAME "Kone Labie" BUNDLE_ID "com.konelabie.gridarvx.plugin"
+        COMPANY_NAME "Cenaceae" BUNDLE_ID "com.cenaceae.gridarvx.plugin"
         PLUGIN_MANUFACTURER_CODE KnLb PLUGIN_CODE GAvx
         PRODUCT_NAME "GRID-ARVx" FORMATS ${GRID_FORMATS}
         IS_SYNTH FALSE NEEDS_MIDI_INPUT TRUE NEEDS_MIDI_OUTPUT FALSE
@@ -99,14 +99,14 @@ if(GRID_BUILD_PLUGINS)
             GIT_SUBMODULES_RECURSE TRUE)
         FetchContent_MakeAvailable(clap_juce_extensions)
         clap_juce_extensions_plugin(TARGET GridARVxPlugin
-            CLAP_ID "com.konelabie.gridarvx" CLAP_FEATURES audio-effect analyzer
+            CLAP_ID "com.cenaceae.gridarvx" CLAP_FEATURES audio-effect analyzer
             CLAP_USE_JUCE_PARAMETER_RANGES ALL)
     endif()
 endif()
 if(GRID_BUILD_APP)
-    juce_add_gui_app(GridARVxApp COMPANY_NAME "Kone Labie" PRODUCT_NAME "GRID-ARVx"
+    juce_add_gui_app(GridARVxApp COMPANY_NAME "Cenaceae" PRODUCT_NAME "GRID-ARVx"
         VERSION ${PROJECT_VERSION}
-        BUNDLE_ID "com.konelabie.gridarvx.app"
+        BUNDLE_ID "com.cenaceae.gridarvx.app"
         MICROPHONE_PERMISSION_ENABLED TRUE
         MICROPHONE_PERMISSION_TEXT "GRID-ARVx uses your chosen audio input to animate visuals.")
     if(WIN32)
