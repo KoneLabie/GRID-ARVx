@@ -95,7 +95,7 @@ def stage(build: Path, destination: Path, release_directory: Path | None = None)
         "engine": "Vel Engine (Greyland Audio Visual Lab Pro 1.2.0); installed engine is never loaded",
         "requires": ["OpenGL-capable GPU"],
         "unverified": ["Activation on a clean tester machine", "Sustained performance", "DAW hosting"],
-        "recording": "Select an existing FFmpeg encoder in Settings; no encoder is bundled",
+        "recording": "The Windows installer bundles the pinned FFmpeg encoder with source and notices",
         "files": {},
     }
     for path in sorted(destination.rglob("*")):

@@ -4,11 +4,6 @@ on:
     branches: [main, master]
   pull_request:
   workflow_dispatch:
-    inputs:
-      bundle_encoder:
-        description: Build and bundle the recording encoder with its source (slower)
-        type: boolean
-        default: false
 permissions:
   contents: read
 concurrency:
@@ -44,15 +39,13 @@ jobs:
         run: ctest --test-dir build -C Release --output-on-failure
       # GPU/OBS behavior is reviewed on real hardware; hosted-runner builds are
       # not labeled as native rendering or clean-machine validation.
-      - name: Install optional recording encoder tools
-        if: inputs.bundle_encoder == true
+      - name: Install recording encoder tools
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
           install: make nasm mingw-w64-x86_64-gcc mingw-w64-x86_64-pkgconf mingw-w64-x86_64-python
-      - name: Build optional recording encoder and source package
-        if: inputs.bundle_encoder == true
+      - name: Build recording encoder and source package
         shell: msys2 {0}
         run: python scripts/encoder.py
       - name: Install Inno Setup 6
@@ -70,12 +63,8 @@ jobs:
           "GRID_ISCC=$folder\ISCC.exe" >> $env:GITHUB_ENV
       - name: Generate Windows installer
         shell: pwsh
-        env:
-          BUNDLE_ENCODER: ${{ inputs.bundle_encoder }}
         run: |
-          $arguments = @('scripts/windows_release.py', '--iscc', $env:GRID_ISCC)
-          if ($env:BUNDLE_ENCODER -eq 'true') { $arguments += @('--encoder', 'build/encoder') }
-          python @arguments
+          python scripts/windows_release.py --iscc $env:GRID_ISCC --encoder build/encoder
       - uses: actions/upload-artifact@v7
         with:
           name: GRID-ARVx-Windows-x64-Installer

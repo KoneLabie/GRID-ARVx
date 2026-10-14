@@ -23,9 +23,9 @@ publisher/application folders automatically. The engine loads from the `Engine`
 folder beside the installed executable, independently of the developer's folder
 layout. Linux/macOS engine experiments are separate and are not in this package.
 
-Recording requires an FFmpeg executable selected in Settings. The standard
-installer does not bundle one. The optional encoder source-build workflow is
-documented in [Windows release instructions](docs/WINDOWS-RELEASE.md).
+The Windows installer bundles the pinned FFmpeg recording encoder with its
+corresponding source and license notices. Users can record immediately after
+installation without downloading FFmpeg separately.
 
 ## GitHub source package
 
@@ -62,7 +62,7 @@ source package at `vendor/VelEngine/Windows/x64/Vel Engine.vst3`. The bridge loa
 only the adjacent verified engine; the installed original is not used or modified.
 This is binary integration, not recovered C++ engine source.
 
-Full packaging instructions, optional encoder support, output paths and test
+Full packaging instructions, encoder support, output paths and test
 boundaries are in [WINDOWS-RELEASE.md](docs/WINDOWS-RELEASE.md).
 
 ## Validation and limitations
