@@ -31,10 +31,10 @@ with tempfile.TemporaryDirectory() as directory:
         subprocess.run(["bash", str(output), options], env={**os.environ, "HOME": str(home)}, check=True, capture_output=True)
         assert (home / ".vst3/GRID-ARVx.vst3").exists() == (expected in ("VST3", "All"))
         assert (home / ".clap/GRID-ARVx.clap").exists() == (expected in ("CLAP", "All"))
-    assert (home / ".local/opt/Cenaceae/GRID-ARVx/GRID-ARVx").exists() == (expected in ("Standalone", "All"))
+        assert (home / ".local/opt/Cenaceae/GRID-ARVx/GRID-ARVx").exists() == (expected in ("Standalone", "All"))
         if expected in ("Standalone", "All"):
-        assert (home / ".local/share/applications/cenaceae-grid-arvx.desktop").exists()
-    assert (home / ".local/share/Cenaceae/GRID-ARVx/tools/ffmpeg").exists()
+            assert (home / ".local/share/applications/cenaceae-grid-arvx.desktop").exists()
+        assert (home / ".local/share/Cenaceae/GRID-ARVx/tools/ffmpeg").exists()
     no_changes = root / "invalid"; no_changes.mkdir()
     result = subprocess.run(["bash", str(output), "--standalone", "--invalid"],
         env={**os.environ, "HOME": str(no_changes)}, capture_output=True)
