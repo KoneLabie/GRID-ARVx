@@ -1,8 +1,8 @@
 # Recording encoder
 
-The 0.4.18 standard Windows installer does not bundle an encoder. Select FFmpeg
-in Settings to record, or enable the optional `bundle_encoder` GitHub Actions
-input. The remaining build/source details below describe that optional path;
+The 0.4.18 Windows installer bundles the pinned FFmpeg encoder and its source
+and license notices. Recording works immediately after installation. The
+remaining build/source details below describe that bundled path;
 the source build must complete on a runner before it can be treated as verified.
 
 GRID-ARVx sends rendered RGB frames through a pipe to a separate FFmpeg executable. It does not link FFmpeg libraries into the application or plugins. Recording contains visuals only; audio processing continues independently.

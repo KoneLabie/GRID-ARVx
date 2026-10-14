@@ -54,13 +54,13 @@ prior result. `--release-dir` selects an explicit compiled application folder.
 
 ## Recording encoder
 
-The standard installer does not bundle FFmpeg. Select an existing executable in
-Settings → Choose FFmpeg encoder to record. Visuals and audio input run without
-it. The Actions manual-run option **bundle_encoder** builds the pinned encoder
-and stages its corresponding source/notices; that optional source-build path
-still needs a successful GitHub runner build. Locally, run `scripts/encoder.py`
-with the documented MSYS2 prerequisites, then pass `--encoder build/encoder` to
-`windows_release.py`. An arbitrary external encoder is not silently repackaged.
+The Windows installer bundles the pinned FFmpeg encoder and its corresponding
+source and LGPL notices. Users can record immediately after installation.
+Visuals and audio input also work without recording. The GitHub Actions workflow
+builds the encoder on every Windows installer run. Locally, run
+`scripts/encoder.py` with the documented MSYS2 prerequisites, then pass
+`--encoder build/encoder` to `windows_release.py`. An arbitrary external
+encoder is not silently repackaged.
 
 ## Validation boundaries
 
