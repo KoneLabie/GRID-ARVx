@@ -20,6 +20,8 @@ int main() {
     check(!behind.isCurrentlyBlockedByAnotherModalComponent(),"closing frame restores underlying controls");
   }
   Processor processor;
+  juce::MemoryBlock autoSaved;
+  processor.setMappingChangedCallback([&] { processor.getStateInformation(autoSaved); });
   const auto remapped=juce::KeyPress('K',juce::ModifierKeys::shiftModifier,0);
   processor.setPerformanceKey(11,remapped);
   check(samePerformanceKey(processor.performanceKey(11),remapped),"keyboard remapping");
@@ -53,6 +55,10 @@ int main() {
   for(size_t i=0;i<performanceActions.size();++i)
     labelsMatch &= labels.keyboard[i]==performanceKeyLabel(processor.performanceKey(i)) && labels.midi[i]==processor.performanceMidiLabel(i);
   check(labelsMatch,"bulk binding snapshot matches every remapped keyboard and MIDI cell");
+  auto automaticallyRestored = std::make_unique<Processor>();
+  check(automaticallyRestored->restoreState(autoSaved.getData(),(int)autoSaved.getSize()) &&
+            automaticallyRestored->performanceMidiLabel(24)=="Ch 2 CC 19",
+        "MIDI mapping changes immediately produce restorable state");
   juce::MemoryBlock state;processor.getStateInformation(state);
   Processor restored;
   check(restored.restoreState(state.getData(),(int)state.getSize()),"state restored");
