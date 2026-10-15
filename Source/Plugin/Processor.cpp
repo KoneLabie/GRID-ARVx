@@ -143,6 +143,7 @@ bool Processor::bind(int ch, int cc, Binding b, bool note) {
     return false;
   bindings[(size_t)activeWorkspace.load()][(size_t)((ch - 1) * 256 + cc + (note ? 128 : 0))].store(pack(b));
   if(workspace()==Workspace::performance)performanceMidi[(size_t)((ch-1)*256+cc+(note?128:0))].store(0);
+  if (mappingChanged) mappingChanged();
   return true;
 }
 void Processor::clearBindings() {
@@ -155,6 +156,7 @@ void Processor::clearBindings() {
     for(auto &entry:performanceMidi)entry.store(0);
     for(auto &entry:performanceMidiDown)entry.store(false);
   }
+  if (mappingChanged) mappingChanged();
 }
 Processor::PerformanceBindingLabels Processor::performanceBindingLabels() const {
   PerformanceBindingLabels labels;
@@ -191,6 +193,7 @@ void Processor::setPerformanceKey(size_t action,const juce::KeyPress &key) {
       data.getDynamicObject()->setProperty(performanceActions[i].id,juce::var(entry));
     }
   setAssetProperty("performanceKeys",juce::JSON::toString(data));
+  if (mappingChanged) mappingChanged();
 }
 void Processor::bindPerformanceMidi(size_t action,int channel,int control,bool note) {
   if(action>=performanceActions.size() || channel<1 || channel>16 || control<0 || control>127)return;
@@ -200,6 +203,7 @@ void Processor::bindPerformanceMidi(size_t action,int channel,int control,bool n
   bindings[(size_t)Workspace::performance][(size_t)slot].store(0);
   performanceMidiDown[(size_t)slot].store(false);
   performanceMidi[(size_t)slot].store((int)action+1);
+  if (mappingChanged) mappingChanged();
   if (midiFeedback)
     midiFeedback(note ? juce::MidiMessage::noteOn(channel, control, (juce::uint8)127)
                       : juce::MidiMessage::controllerEvent(channel, control, (juce::uint8)127));

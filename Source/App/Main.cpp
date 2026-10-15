@@ -152,6 +152,7 @@ public:
                                       static_cast<int>(state.getSize()));
     else if (!selfTest_)
       processor_->setAssetProperty("freshStart", "1");
+    processor_->setMappingChangedCallback([this] { saveState(); });
     juce::Rectangle<int> targetArea=selfTest_?monitorWorkArea(2):juce::Rectangle<int>{};
     if(arguments.startsWith("--monitor=")) {
       targetArea=monitorWorkArea(arguments.fromFirstOccurrenceOf("=",false,false).getIntValue());
@@ -236,23 +237,29 @@ public:
       devices_.removeAudioCallback(input_.get());
       devices_.removeMidiInputDeviceCallback({}, input_.get());
     }
-    if (!selfTest_)
-      if (auto xml = devices_.createStateXml())
-        xml->writeTo(directory_.getChildFile("audio.xml"));
+    saveDeviceState();
     devices_.closeAudioDevice();
+    if (processor_) processor_->setMappingChangedCallback({});
     window_.reset();
-    if (processor_ && !selfTest_) {
-      juce::MemoryBlock state;
-      processor_->getStateInformation(state);
-      directory_.getChildFile("state.bin")
-          .replaceWithData(state.getData(), state.getSize());
-    }
+    saveState();
     systemInput_.reset();
     input_.reset();
     processor_.reset();
   }
 
 private:
+  void saveState() {
+    if (selfTest_ || !processor_) return;
+    juce::MemoryBlock state;
+    processor_->getStateInformation(state);
+    if (!directory_.getChildFile("state.bin").replaceWithData(state.getData(), state.getSize()))
+      juce::Logger::writeToLog("Unable to save GRID-ARVx settings and MIDI bindings.");
+  }
+  void saveDeviceState() {
+    if (selfTest_) return;
+    if (auto xml = devices_.createStateXml())
+      xml->writeTo(directory_.getChildFile("audio.xml"));
+  }
   static bool isolatedCheck(const juce::String &arguments) {
     for(const char *flag:{"--transition-check ","--render-check ","--self-test ","--ui-check ","--record-check ","--fx-check "})
       if(arguments.startsWith(flag))return true;
@@ -319,13 +326,14 @@ private:
   std::unique_ptr<juce::Component> makeAudioPanel() {
     class AudioPanel final : public juce::Component {
     public:
-      AudioPanel(juce::AudioDeviceManager &devices, Processor &p,
+      AudioPanel(juce::AudioDeviceManager &deviceManager, Processor &p,
                  std::function<juce::Result(bool)> sourceAction,
-                 std::function<juce::Result(const juce::String &)> speakerAction)
-          : processor(p), changeSource(std::move(sourceAction)),
+                 std::function<juce::Result(const juce::String &)> speakerAction,
+                 std::function<void()> saveMidiDevices)
+          : devices(deviceManager), processor(p), changeSource(std::move(sourceAction)),
             changeSpeaker(std::move(speakerAction)),
-            audioSelector(devices, 0, 2, 0, 0, false, false, true, false),
-            midiSelector(devices, 0, 0, 0, 0, true, false, false, false) {
+            persistMidiDevices(std::move(saveMidiDevices)),
+            audioSelector(deviceManager, 0, 2, 0, 0, false, false, true, false) {
         deviceGroup.setText("Audio devices");
         addAndMakeVisible(deviceGroup);
         midiGroup.setText("MIDI inputs");
@@ -374,13 +382,33 @@ private:
         mute.setButtonText("Mute analysis input");
         mute.setToggleState(p.value("muteInput") >= 64, juce::dontSendNotification);
         mute.onClick = [this] { processor.set("muteInput", mute.getToggleState() ? 127 : 0); };
-        deviceNote.setText("Microphone/interface and MIDI inputs apply when using either source mode.", juce::dontSendNotification);
-        addAndMakeVisible(deviceNote);
+        audioViewport.setComponentID("audio-device-list");
         addAndMakeVisible(audioViewport);
         audioViewport.setViewedComponent(&audioSelector, false);
+        midiOutputLabel.setText("MIDI output for pad lights", juce::dontSendNotification);
+        addAndMakeVisible(midiOutputLabel);
+        midiOutput.setComponentID("midi-output");
+        midiOutput.onChange = [this] {
+          const int selected = midiOutput.getSelectedId();
+          if (selected < 1 || selected > midiOutputs.size() + 1) return;
+          devices.setDefaultMidiOutputDevice(selected == 1 ? juce::String()
+                                                              : midiOutputs[selected - 2].identifier);
+          persistMidiDevices();
+        };
+        addAndMakeVisible(midiOutput);
+        midiRefresh.setButtonText("Refresh MIDI devices");
+        midiRefresh.setComponentID("refresh-midi-devices");
+        midiRefresh.onClick = [this] { refreshMidiDevices(); };
+        addAndMakeVisible(midiRefresh);
+        midiHint.setText("Check a controller to receive MIDI from it.", juce::dontSendNotification);
+        addAndMakeVisible(midiHint);
+        midiEmpty.setText("No MIDI inputs detected. Connect a controller and click Refresh MIDI devices.",
+                          juce::dontSendNotification);
+        midiInputContents.addAndMakeVisible(midiEmpty);
+        midiViewport.setComponentID("midi-input-list");
         addAndMakeVisible(midiViewport);
-        midiViewport.setViewedComponent(&midiSelector, false);
-        refreshDevices(); refreshSource();
+        midiViewport.setViewedComponent(&midiInputContents, false);
+        refreshDevices(); refreshMidiDevices(); refreshSource();
         setSize(640, 520);
       }
       void refreshDevices() {
@@ -398,6 +426,33 @@ private:
         }
         speakers.setSelectedId(selected, juce::dontSendNotification);
       }
+      void refreshMidiDevices() {
+        midiInputButtons.clear();
+        const auto inputs = juce::MidiInput::getAvailableDevices();
+        for (const auto &input : inputs) {
+          auto *button = midiInputButtons.add(new juce::ToggleButton(input.name));
+          button->setToggleState(devices.isMidiInputDeviceEnabled(input.identifier),
+                                 juce::dontSendNotification);
+          button->onClick = [this, button, id = input.identifier] {
+            devices.setMidiInputDeviceEnabled(id, button->getToggleState());
+            button->setToggleState(devices.isMidiInputDeviceEnabled(id), juce::dontSendNotification);
+            persistMidiDevices();
+          };
+          midiInputContents.addAndMakeVisible(button);
+        }
+        midiEmpty.setVisible(inputs.isEmpty());
+        midiOutputs = juce::MidiOutput::getAvailableDevices();
+        midiOutput.clear(juce::dontSendNotification);
+        midiOutput.addItem("None", 1);
+        int selected = 1;
+        const auto saved = devices.getDefaultMidiOutputIdentifier();
+        for (int i = 0; i < midiOutputs.size(); ++i) {
+          midiOutput.addItem(midiOutputs[i].name, i + 2);
+          if (midiOutputs[i].identifier == saved) selected = i + 2;
+        }
+        midiOutput.setSelectedId(selected, juce::dontSendNotification);
+        if (getWidth() > 0) resized();
+      }
       void refreshSource() {
         const bool system = processor.getAssetProperty("audioSource") == "system";
         source.setSelectedId(system ? 2 : 1, juce::dontSendNotification);
@@ -409,37 +464,52 @@ private:
       }
       void resized() override {
         const auto width = getWidth() - 30;
-        deviceGroup.setBounds(8, 0, getWidth() - 16, 390);
-        midiGroup.setBounds(8, 399, getWidth() - 16, getHeight() - 399);
+        deviceGroup.setBounds(8, 0, getWidth() - 16, 280);
+        midiGroup.setBounds(8, 288, getWidth() - 16, getHeight() - 288);
         sourceLabel.setBounds(22, 30, 175, 28);
         source.setBounds(205, 30, getWidth() - 220, 28);
         speakersLabel.setBounds(22, 66, 175, 28);
         speakers.setBounds(205, 66, getWidth() - 300, 28);
         refresh.setBounds(getWidth() - 88, 66, 73, 28);
-        message.setBounds(22, 99, width, 36);
-        mute.setBounds(22, 138, width, 26);
-        activity.setBounds(22, 166, width, 24);
-        deviceNote.setBounds(22, 232, width, 30);
-        audioViewport.setBounds(15, 266, getWidth() - 30, 110);
-        midiViewport.setBounds(15, 416, getWidth() - 30, getHeight() - 430);
-        audioSelector.setSize(getWidth() - audioViewport.getScrollBarThickness(), 96);
-        midiSelector.setSize(getWidth() - midiViewport.getScrollBarThickness(), 220);
+        message.setBounds(22, 99, width, 30);
+        mute.setBounds(22, 129, width, 26);
+        activity.setBounds(22, 157, width, 24);
+        audioViewport.setBounds(15, 186, getWidth() - 30, 86);
+        audioSelector.setSize(getWidth() - audioViewport.getScrollBarThickness(), 260);
+        midiOutputLabel.setBounds(22, 310, 177, 28);
+        midiOutput.setBounds(205, 310, getWidth() - 220, 28);
+        midiRefresh.setBounds(22, 344, 165, 26);
+        midiHint.setBounds(199, 344, getWidth() - 215, 26);
+        midiViewport.setBounds(22, 377, getWidth() - 44, getHeight() - 389);
+        const int listWidth = midiViewport.getWidth() - midiViewport.getScrollBarThickness();
+        midiInputContents.setSize(listWidth, juce::jmax(midiViewport.getHeight(),
+                                                       midiInputButtons.size() * 29));
+        midiEmpty.setBounds(0, 0, listWidth, 30);
+        for (int i = 0; i < midiInputButtons.size(); ++i)
+          midiInputButtons[i]->setBounds(0, i * 29, listWidth, 27);
       }
+      juce::AudioDeviceManager &devices;
       Processor &processor;
       std::function<juce::Result(bool)> changeSource;
       std::function<juce::Result(const juce::String &)> changeSpeaker;
+      std::function<void()> persistMidiDevices;
       juce::Array<SystemInput::PlaybackDevice> endpoints;
-      juce::AudioDeviceSelectorComponent audioSelector, midiSelector;
+      juce::Component midiInputContents;
+      juce::AudioDeviceSelectorComponent audioSelector;
       juce::Viewport audioViewport, midiViewport;
-      juce::ComboBox source, speakers;
-      juce::TextButton refresh;
-      juce::Label sourceLabel, speakersLabel, message, deviceNote, activity;
+      juce::OwnedArray<juce::ToggleButton> midiInputButtons;
+      juce::Array<juce::MidiDeviceInfo> midiOutputs;
+      juce::ComboBox source, speakers, midiOutput;
+      juce::TextButton refresh, midiRefresh;
+      juce::Label sourceLabel, speakersLabel, message, activity;
+      juce::Label midiOutputLabel, midiHint, midiEmpty;
       juce::ToggleButton mute;
       juce::GroupComponent deviceGroup, midiGroup;
     };
     return std::make_unique<AudioPanel>(devices_, *processor_,
         [this](bool system) { return selectAudioSource(system); },
-        [this](const juce::String &id) { return selectSpeaker(id); });
+        [this](const juce::String &id) { return selectSpeaker(id); },
+        [this] { saveDeviceState(); });
   }
   juce::File directory_;
   juce::AudioDeviceManager devices_;

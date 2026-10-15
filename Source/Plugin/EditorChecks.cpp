@@ -877,6 +877,14 @@ juce::String Editor::runUiChecks(const juce::File &folder) {
           "Native audio / MIDI device selector is mounted");
     auto *captureSource = dynamic_cast<juce::ComboBox *>(devices->findChildWithID("capture-source"));
     auto *speaker = dynamic_cast<juce::ComboBox *>(devices->findChildWithID("speaker-device"));
+    auto *audioList = devices->findChildWithID("audio-device-list");
+    auto *midiList = devices->findChildWithID("midi-input-list");
+    auto *midiOutput = dynamic_cast<juce::ComboBox *>(devices->findChildWithID("midi-output"));
+    check(captureSource && audioList && midiList && midiOutput &&
+              captureSource->getY() < audioList->getY() &&
+              audioList->getBottom() < midiList->getY() &&
+              midiList->getHeight() >= 70 && midiOutput->getNumItems() >= 1,
+          "Audio source and devices appear above a usable MIDI input list and lighting output");
 #if JUCE_WINDOWS
     check(captureSource && speaker, "Audio page exposes microphone and named speaker selectors");
     if (captureSource && speaker) {

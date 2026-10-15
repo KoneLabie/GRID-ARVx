@@ -712,7 +712,7 @@ void Editor::audioPage() {
   if (audioSettings) {
     auto devices = audioSettings();
     if (devices) {
-      devices->setBounds(20, 63, 640, 440);
+      devices->setBounds(20, 63, 640, 460);
       panel->addAndMakeVisible(*devices);
       panelWidgets.push_back(std::move(devices));
     }

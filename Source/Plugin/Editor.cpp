@@ -1059,6 +1059,9 @@ void Editor::resized() {
   if (panel) {
     panel->setBounds(r.withSizeKeepingCentre(
         juce::jmin(680, uiWidth - 40), juce::jmin(560, uiHeight - 80)));
+    if (settingsScreen == SettingsPage::audio && audioSettings && !panelWidgets.empty())
+      panelWidgets.front()->setBounds(20, 63, panel->getWidth() - 40,
+                                      panel->getHeight() - 80);
     panel->toFront(false);
     if (settingsScreen != SettingsPage::none) {
       back.setBounds(16, 15, 76, 30);

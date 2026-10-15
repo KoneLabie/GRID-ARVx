@@ -54,6 +54,7 @@ public:
   void setPerformanceKey(size_t,const juce::KeyPress &);
   void bindPerformanceMidi(size_t,int channel,int control,bool note);
   void setMidiFeedback(std::function<void(const juce::MidiMessage &)> callback) { midiFeedback = std::move(callback); }
+  void setMappingChangedCallback(std::function<void()> callback) { mappingChanged = std::move(callback); }
   juce::String performanceMidiLabel(size_t) const;
   MidiEvents performanceEvents;
   void selectWorkspace(Workspace);
@@ -79,6 +80,7 @@ private:
   std::array<std::array<int, controls.size()>, 3> workspaceValues{};
   std::atomic<bool> switchingWorkspace{false};
   std::function<void(const juce::MidiMessage &)> midiFeedback;
+  std::function<void()> mappingChanged;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Processor)
 };
 } // namespace kone::grid
