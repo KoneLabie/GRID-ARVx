@@ -325,9 +325,7 @@ private:
           : processor(p), changeSource(std::move(sourceAction)),
             changeSpeaker(std::move(speakerAction)),
             audioSelector(devices, 0, 2, 0, 0, false, false, true, false),
-            midiSelector(devices, 0, 0, 0, 0, true, true, false, false) {
-        sourceGroup.setText("Audio source");
-        addAndMakeVisible(sourceGroup);
+            midiSelector(devices, 0, 0, 0, 0, true, false, false, false) {
         deviceGroup.setText("Audio devices");
         addAndMakeVisible(deviceGroup);
         midiGroup.setText("MIDI inputs");
@@ -411,9 +409,8 @@ private:
       }
       void resized() override {
         const auto width = getWidth() - 30;
-        sourceGroup.setBounds(8, 0, getWidth() - 16, 198);
-        deviceGroup.setBounds(8, 207, getWidth() - 16, 165);
-        midiGroup.setBounds(8, 380, getWidth() - 16, getHeight() - 380);
+        deviceGroup.setBounds(8, 0, getWidth() - 16, 390);
+        midiGroup.setBounds(8, 399, getWidth() - 16, getHeight() - 399);
         sourceLabel.setBounds(22, 30, 175, 28);
         source.setBounds(205, 30, getWidth() - 220, 28);
         speakersLabel.setBounds(22, 66, 175, 28);
@@ -423,8 +420,8 @@ private:
         mute.setBounds(22, 138, width, 26);
         activity.setBounds(22, 166, width, 24);
         deviceNote.setBounds(22, 232, width, 30);
-        audioViewport.setBounds(15, 266, getWidth() - 30, 100);
-        midiViewport.setBounds(15, 424, getWidth() - 30, getHeight() - 438);
+        audioViewport.setBounds(15, 266, getWidth() - 30, 110);
+        midiViewport.setBounds(15, 416, getWidth() - 30, getHeight() - 430);
         audioSelector.setSize(getWidth() - audioViewport.getScrollBarThickness(), 96);
         midiSelector.setSize(getWidth() - midiViewport.getScrollBarThickness(), 220);
       }
@@ -438,7 +435,7 @@ private:
       juce::TextButton refresh;
       juce::Label sourceLabel, speakersLabel, message, deviceNote, activity;
       juce::ToggleButton mute;
-      juce::GroupComponent sourceGroup, deviceGroup, midiGroup;
+      juce::GroupComponent deviceGroup, midiGroup;
     };
     return std::make_unique<AudioPanel>(devices_, *processor_,
         [this](bool system) { return selectAudioSource(system); },
